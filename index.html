@@ -10,6 +10,7 @@
 
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 18px;
@@ -17,22 +18,26 @@
       color: #222;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
     }
+
     .container {
       width: 100%;
       max-width: 520px;
       margin: 0 auto;
     }
+
     .card {
       background: #fff;
       border-radius: 18px;
       padding: 20px;
-      box-shadow: 0 6px 22px rgba(0,0,0,.08);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, .08);
     }
+
     h1 {
       margin: 0 0 8px;
       text-align: center;
       font-size: 23px;
     }
+
     .sub {
       margin: 0 0 18px;
       text-align: center;
@@ -40,6 +45,7 @@
       line-height: 1.6;
       font-size: 14px;
     }
+
     #reader {
       width: 100%;
       min-height: 260px;
@@ -47,23 +53,63 @@
       border-radius: 14px;
       background: #111;
     }
+
     .controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-top: 14px;
     }
-    button {
+
+    button,
+    select {
       min-height: 48px;
-      border: 0;
       border-radius: 12px;
       font-size: 16px;
+    }
+
+    button {
+      border: 0;
       font-weight: 700;
       cursor: pointer;
     }
-    #startButton { background: #222; color: #fff; }
-    #stopButton { background: #e8e8e8; color: #333; }
-    button:disabled { opacity: .45; cursor: default; }
+
+    #startButton {
+      background: #222;
+      color: #fff;
+    }
+
+    #stopButton {
+      background: #e8e8e8;
+      color: #333;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
+    .camera-select-wrap {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .camera-select-wrap label {
+      display: block;
+      margin-bottom: 7px;
+      color: #555;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    #cameraSelect {
+      width: 100%;
+      padding: 0 12px;
+      border: 1px solid #ccc;
+      background: #fff;
+      color: #222;
+    }
+
     .result {
       margin-top: 16px;
       padding: 16px;
@@ -72,23 +118,27 @@
       border: 2px solid #8bc34a;
       text-align: center;
     }
+
     .label {
       color: #558b2f;
       font-weight: 700;
       font-size: 13px;
       margin-bottom: 7px;
     }
+
     #barcode {
       min-height: 34px;
       font-size: 24px;
       font-weight: 800;
       overflow-wrap: anywhere;
     }
+
     #format {
       margin-top: 5px;
       color: #666;
       font-size: 13px;
     }
+
     .status {
       margin-top: 14px;
       padding: 12px;
@@ -100,10 +150,12 @@
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
+
     .error {
       background: #fff1ed;
       color: #b6381d;
     }
+
     .tip {
       margin-top: 14px;
       color: #777;
@@ -117,11 +169,17 @@
   <main class="container">
     <section class="card">
       <h1>📷 商品條碼掃描測試</h1>
+
       <p class="sub">
         請用手機 Chrome 開啟，按下「開啟相機」，並允許使用相機。
       </p>
 
       <div id="reader"></div>
+
+      <div class="camera-select-wrap" id="cameraSelectWrap">
+        <label for="cameraSelect">選擇相機</label>
+        <select id="cameraSelect"></select>
+      </div>
 
       <div class="controls">
         <button id="startButton" type="button">開啟相機</button>
@@ -151,8 +209,11 @@
     const barcodeBox = document.getElementById("barcode");
     const formatBox = document.getElementById("format");
     const statusBox = document.getElementById("status");
+    const cameraSelectWrap = document.getElementById("cameraSelectWrap");
+    const cameraSelect = document.getElementById("cameraSelect");
 
     let isRunning = false;
+    let cameras = [];
     let lastCode = "";
     let lastTime = 0;
 
@@ -164,22 +225,131 @@
     function describeCameraError(error) {
       const message = String(error || "");
 
-      if (message.includes("NotAllowedError") || message.includes("Permission")) {
+      if (
+        message.includes("NotAllowedError") ||
+        message.includes("Permission") ||
+        message.includes("PermissionDenied")
+      ) {
         return "相機權限被拒絕。請到 Chrome 的網站設定，允許此網站使用相機後重新整理。";
       }
+
       if (message.includes("NotFoundError")) {
         return "找不到可用的相機。";
       }
+
       if (message.includes("NotReadableError")) {
         return "相機目前可能正被其他 App 使用，請關閉其他相機程式後再試。";
       }
+
       if (message.includes("OverconstrainedError")) {
-        return "無法使用指定的後置鏡頭，請重新整理後再試。";
+        return "無法使用指定的鏡頭，請改選其他相機再試。";
       }
+
       if (!window.isSecureContext) {
         return "目前不是安全的 HTTPS 網頁，相機無法啟動。";
       }
+
       return "相機啟動失敗：" + message;
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      const now = Date.now();
+
+      if (decodedText === lastCode && now - lastTime < 2500) {
+        return;
+      }
+
+      lastCode = decodedText;
+      lastTime = now;
+
+      barcodeBox.textContent = decodedText;
+
+      const formatName =
+        decodedResult?.result?.format?.formatName ||
+        decodedResult?.result?.format?.format ||
+        "已成功辨識";
+
+      formatBox.textContent = "格式：" + formatName;
+      setStatus("辨識成功");
+
+      if ("vibrate" in navigator) {
+        navigator.vibrate(120);
+      }
+    }
+
+    function onScanFailure() {
+      // 沒有讀到條碼是正常狀態，不顯示錯誤。
+    }
+
+    function scannerConfig() {
+      return {
+        fps: 10,
+        aspectRatio: 1.777778,
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+          return {
+            width: Math.min(Math.floor(viewfinderWidth * 0.88), 340),
+            height: Math.min(Math.floor(viewfinderHeight * 0.38), 150)
+          };
+        },
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.EAN_8,
+          Html5QrcodeSupportedFormats.UPC_A,
+          Html5QrcodeSupportedFormats.UPC_E,
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.CODE_39,
+          Html5QrcodeSupportedFormats.QR_CODE
+        ]
+      };
+    }
+
+    async function loadCameras() {
+      cameras = await Html5Qrcode.getCameras();
+
+      cameraSelect.innerHTML = "";
+
+      cameras.forEach((camera, index) => {
+        const option = document.createElement("option");
+        option.value = camera.id;
+        option.textContent = camera.label || `相機 ${index + 1}`;
+        cameraSelect.appendChild(option);
+      });
+
+      if (cameras.length > 1) {
+        const rearCameraIndex = cameras.findIndex(camera =>
+          /back|rear|environment|後置|背面/i.test(camera.label)
+        );
+
+        if (rearCameraIndex >= 0) {
+          cameraSelect.selectedIndex = rearCameraIndex;
+        }
+
+        cameraSelectWrap.style.display = "block";
+      } else {
+        cameraSelectWrap.style.display = "none";
+      }
+
+      return cameras;
+    }
+
+    async function startWithSelectedCamera() {
+      if (!cameras.length) {
+        await loadCameras();
+      }
+
+      if (!cameras.length) {
+        throw new Error("找不到可用的相機");
+      }
+
+      const selectedCameraId =
+        cameraSelect.value || cameras[0].id;
+
+      await scanner.start(
+        selectedCameraId,
+        scannerConfig(),
+        onScanSuccess,
+        onScanFailure
+      );
     }
 
     async function startCamera() {
@@ -189,56 +359,30 @@
       setStatus("正在要求相機權限…");
 
       try {
+        // 先嘗試直接啟動後置鏡頭
         await scanner.start(
-          { facingMode: { ideal: "environment" } },
-          {
-            fps: 10,
-            aspectRatio: 1.777778,
-            qrbox: function(viewfinderWidth, viewfinderHeight) {
-              return {
-                width: Math.min(Math.floor(viewfinderWidth * 0.88), 340),
-                height: Math.min(Math.floor(viewfinderHeight * 0.38), 150)
-              };
-            },
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.EAN_8,
-              Html5QrcodeSupportedFormats.UPC_A,
-              Html5QrcodeSupportedFormats.UPC_E,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39,
-              Html5QrcodeSupportedFormats.QR_CODE
-            ]
-          },
-          function(decodedText, decodedResult) {
-            const now = Date.now();
-
-            if (decodedText === lastCode && now - lastTime < 2500) return;
-
-            lastCode = decodedText;
-            lastTime = now;
-
-            barcodeBox.textContent = decodedText;
-            const formatName =
-              decodedResult?.result?.format?.formatName ||
-              decodedResult?.result?.format?.format ||
-              "已成功辨識";
-            formatBox.textContent = "格式：" + formatName;
-            setStatus("辨識成功");
-
-            if ("vibrate" in navigator) navigator.vibrate(120);
-          },
-          function() {
-            // 掃描過程中未讀到條碼屬正常情況，不顯示錯誤。
-          }
+          { facingMode: "environment" },
+          scannerConfig(),
+          onScanSuccess,
+          onScanFailure
         );
 
         isRunning = true;
         stopButton.disabled = false;
         setStatus("相機已開啟，請將條碼放入掃描框");
-      } catch (error) {
-        console.error(error);
-        setStatus(describeCameraError(error), true);
+      } catch (firstError) {
+        console.warn("自動開啟後置鏡頭失敗，改用相機清單：", firstError);
+
+        try {
+          await startWithSelectedCamera();
+
+          isRunning = true;
+          stopButton.disabled = false;
+          setStatus("相機已開啟，請將條碼放入掃描框");
+        } catch (secondError) {
+          console.error(secondError);
+          setStatus(describeCameraError(secondError), true);
+        }
       } finally {
         startButton.disabled = isRunning;
       }
@@ -252,6 +396,7 @@
       try {
         await scanner.stop();
         await scanner.clear();
+
         isRunning = false;
         startButton.disabled = false;
         setStatus("相機已關閉");
@@ -261,6 +406,29 @@
         stopButton.disabled = false;
       }
     }
+
+    cameraSelect.addEventListener("change", async function () {
+      if (!isRunning) return;
+
+      try {
+        await scanner.stop();
+        await scanner.clear();
+        isRunning = false;
+
+        await startWithSelectedCamera();
+
+        isRunning = true;
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        setStatus("已切換相機，請將條碼放入掃描框");
+      } catch (error) {
+        console.error(error);
+        setStatus(describeCameraError(error), true);
+        isRunning = false;
+        startButton.disabled = false;
+        stopButton.disabled = true;
+      }
+    });
 
     startButton.addEventListener("click", startCamera);
     stopButton.addEventListener("click", stopCamera);
