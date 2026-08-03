@@ -1,3 +1,5 @@
+console.log("api.js 已載入");
+
 // Apps Script API
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzhYLD2QZVNsKfZTwkvAV74TxG0a6vgfRh9P6CU1oH4L1Qor8PALtOVuIZHrLU7KKySMQ/exec";
