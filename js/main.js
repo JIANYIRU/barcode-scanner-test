@@ -1,3 +1,4 @@
+console.log("main.js 已載入");
 document.addEventListener("DOMContentLoaded", init);
 
 /**
@@ -79,10 +80,13 @@ function startScan() {
  * 載入通路
  */
 async function loadChannels() {
+  console.log("開始讀取通路");
 
-  const result =
-    await api("getChannels");
+  try {
+    const result = await api("getChannels");
 
-  console.log(result);
-
+    console.log("通路 API 回傳：", result);
+  } catch (error) {
+    console.error("讀取通路失敗：", error);
+  }
 }
