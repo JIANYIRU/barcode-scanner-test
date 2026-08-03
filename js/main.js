@@ -76,30 +76,40 @@ function startScan() {
 
 }
 
+
 /**
  * 載入通路
  */
 async function loadChannels() {
+  const channelSelect = document.getElementById("channel");
 
-  const result =
-    await api("getChannels");
+  channelSelect.innerHTML =
+    '<option value="">正在載入通路...</option>';
 
-  const channelSelect =
-    document.getElementById("channel");
+  try {
+    const result = await api("getChannels");
 
-  channelSelect.innerHTML = "";
+    console.log("通路載入結果：", result);
 
-  result.channels.forEach(channel => {
+    if (!result.success || !Array.isArray(result.channels)) {
+      throw new Error(result.message || "通路資料格式錯誤");
+    }
 
-    const option =
-      document.createElement("option");
+    channelSelect.innerHTML =
+      '<option value="">請選擇通路</option>';
 
-    option.value = channel.code;
+    result.channels.forEach(function (channel) {
+      const option = document.createElement("option");
 
-    option.textContent = channel.name;
+      option.value = channel.code;
+      option.textContent = channel.name;
 
-    channelSelect.appendChild(option);
+      channelSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error("通路載入失敗：", error);
 
-  });
-
+    channelSelect.innerHTML =
+      '<option value="">通路載入失敗</option>';
+  }
 }
