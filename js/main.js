@@ -31,12 +31,14 @@ function setToday() {
  * 綁定事件
  */
 function bindEvents() {
-  const channelSelect = document.getElementById("channel");
-  const startButton = document.getElementById("startButton");
+  const channelSelect =
+    document.getElementById("channel");
 
-  // 通路改變時，重新載入對應店家
-  channelSelect.addEventListener("change", async function () {
-    await loadBranches(channelSelect.value);
+  const startButton =
+    document.getElementById("startButton");
+
+  channelSelect.addEventListener("change", function () {
+    loadBranches(channelSelect.value);
   });
 
   startButton.addEventListener("click", startScan);
@@ -60,8 +62,7 @@ async function loadChannels() {
       throw new Error(result.message || "通路資料格式錯誤");
     }
 
-    channelSelect.innerHTML =
-      '<option value="">請選擇通路</option>';
+    channelSelect.innerHTML = "";
 
     result.channels.forEach(function (channel) {
       const option = document.createElement("option");
@@ -72,10 +73,15 @@ async function loadChannels() {
       channelSelect.appendChild(option);
     });
 
-    // 預設自動選第一個通路，並載入店家
+    // 預設選擇第一個通路
     if (result.channels.length > 0) {
-      channelSelect.value = result.channels[0].code;
-      await loadBranches(result.channels[0].code);
+      const firstChannelCode = result.channels[0].code;
+
+      channelSelect.value = firstChannelCode;
+
+      console.log("準備載入店家，通路代號：", firstChannelCode);
+
+      await loadBranches(firstChannelCode);
     }
   } catch (error) {
     console.error("通路載入失敗：", error);
@@ -90,6 +96,8 @@ async function loadChannels() {
  */
 async function loadBranches(channelCode) {
   const branchSelect = document.getElementById("branch");
+
+  console.log("loadBranches 收到：", channelCode);
 
   if (!channelCode) {
     branchSelect.innerHTML =
@@ -134,7 +142,6 @@ async function loadBranches(channelCode) {
       '<option value="">店家載入失敗</option>';
   }
 }
-
 /**
  * 開始抄貨
  */
