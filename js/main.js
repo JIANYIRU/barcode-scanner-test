@@ -80,13 +80,26 @@ function startScan() {
  * 載入通路
  */
 async function loadChannels() {
-  console.log("開始讀取通路");
 
-  try {
-    const result = await api("getChannels");
+  const result =
+    await api("getChannels");
 
-    console.log("通路 API 回傳：", result);
-  } catch (error) {
-    console.error("讀取通路失敗：", error);
-  }
+  const channelSelect =
+    document.getElementById("channel");
+
+  channelSelect.innerHTML = "";
+
+  result.channels.forEach(channel => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = channel.code;
+
+    option.textContent = channel.name;
+
+    channelSelect.appendChild(option);
+
+  });
+
 }
