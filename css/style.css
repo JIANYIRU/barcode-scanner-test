@@ -131,3 +131,68 @@ h1 {
     font-size: 19px;
   }
 }
+
+/* Dashboard 首頁 */
+
+.dashboard-card {
+  max-width: 760px;
+}
+
+.dashboard-menu {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 72px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    transform 0.1s ease,
+    opacity 0.1s ease;
+}
+
+.dashboard-button:active {
+  transform: translateY(1px);
+  opacity: 0.9;
+}
+
+.button-blue {
+  background: #2868d7;
+}
+
+.button-green {
+  background: #2d9b67;
+}
+
+.button-orange {
+  background: #e58a2e;
+}
+
+.button-purple {
+  background: #7958bd;
+}
+
+@media (max-width: 700px) {
+  .dashboard-menu {
+    gap: 14px;
+  }
+
+  .dashboard-button {
+    min-height: 62px;
+    font-size: 19px;
+  }
+}
+
+
+
+
