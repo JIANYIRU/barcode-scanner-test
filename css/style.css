@@ -345,7 +345,55 @@ h1 {
   text-align: center;
 }
 
+/* 相機開啟時占滿整列 */
 
+.camera-area {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.camera-area[hidden] {
+  display: none;
+}
+
+#reader {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #d5dce6;
+  border-radius: 12px;
+  background: #000000;
+}
+
+#reader video {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover;
+}
+
+.scan-actions.camera-open {
+  display: none;
+}
+
+#closeCameraButton {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #667085;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#cameraStatus {
+  margin: 12px 0 0;
+  font-size: 17px;
+  text-align: center;
+}
 
 
 
