@@ -146,19 +146,27 @@ async function loadBranches(channelCode) {
  * 開始抄貨
  */
 function startScan() {
-  const channelSelect = document.getElementById("channel");
-  const branchSelect = document.getElementById("branch");
-  const orderDate = document.getElementById("orderDate").value;
+
+  const channelSelect =
+    document.getElementById("channel");
+
+  const branchSelect =
+    document.getElementById("branch");
+
+  const orderDate =
+    document.getElementById("orderDate").value;
 
   const channelName =
-    channelSelect.options[channelSelect.selectedIndex]?.text || "";
+    channelSelect.options[channelSelect.selectedIndex].text;
 
   const branchName =
-    branchSelect.options[branchSelect.selectedIndex]?.text || "";
+    branchSelect.options[branchSelect.selectedIndex].text;
 
-  alert(
-    `通路：${channelName}\n` +
-    `店家：${branchName}\n` +
-    `日期：${orderDate}`
-  );
+  const url =
+    `scan.html?channel=${encodeURIComponent(channelName)}`
+    + `&branch=${encodeURIComponent(branchName)}`
+    + `&date=${encodeURIComponent(orderDate)}`;
+
+  window.location.href = url;
+
 }
