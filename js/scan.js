@@ -235,13 +235,7 @@ async function handleScanSuccess(decodedText) {
     cameraStatus.textContent =
       `掃描成功：${currentProduct.name}｜${currentProduct.barcode}`;
 
-  } catch (error) {
-    console.error("商品查詢失敗：", error);
-
-    currentProduct = null;
-
-    cameraStatus.textContent =
-      "商品查詢失敗，請確認網路連線後再試一次。";
+ } catch (error) {
 
   } finally {
     // 稍微停頓後繼續接受下一個條碼
