@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", init);
 let html5QrCode = null;
 let isCameraRunning = false;
 
+// 防止連續掃描
+let isScanLocked = false;
+let lastBarcode = "";
+
 /**
  * 初始化新增抄貨單頁面
  */
@@ -158,16 +162,29 @@ async function closeCamera() {
  */
 function handleScanSuccess(decodedText) {
 
-    console.log("掃描成功：", decodedText);
+  // 已鎖定就直接忽略
+  if (isScanLocked) {
+    return;
+  }
 
-    if (navigator.vibrate) {
-        navigator.vibrate(100);
-    }
+  isScanLocked = true;
 
-    document.getElementById("cameraStatus").textContent =
-        `掃描成功：${decodedText}`;
+  console.log("掃描成功：", decodedText);
 
-    // 下一步會在這裡查商品 API
+  if (navigator.vibrate) {
+    navigator.vibrate(100);
+  }
+
+  document.getElementById("cameraStatus").textContent =
+    `掃描成功：${decodedText}`;
+
+  lastBarcode = decodedText;
+
+  // 0.8 秒後解除鎖定
+  setTimeout(() => {
+    isScanLocked = false;
+  }, 800);
+
 }
 
 /**
