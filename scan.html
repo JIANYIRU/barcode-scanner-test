@@ -2,61 +2,56 @@
 <html lang="zh-Hant">
 
 <head>
+  <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1">
+  <title>開始抄貨</title>
 
-<title>開始抄貨</title>
-
-<link rel="stylesheet" href="css/style.css?v=10">
-
+  <link rel="stylesheet" href="css/style.css?v=10">
 </head>
 
 <body>
+  <main class="page">
+    <h1>新增抄貨單</h1>
 
-<main class="page">
+    <div class="divider"></div>
 
-<h1>新增抄貨單</h1>
+    <div id="orderInfo"></div>
 
-<div class="divider"></div>
+    <div class="divider"></div>
 
-<div id="orderInfo"></div>
+    <div class="scan-actions">
+      <button id="scanButton" type="button">
+        開啟相機
+      </button>
 
-<div class="divider"></div>
+      <button id="manualButton" type="button">
+        手動輸入條碼
+      </button>
+    </div>
 
-<div class="scan-actions">
+    <div class="divider"></div>
 
-  <button id="scanButton">
-    開啟相機
-  </button>
+    <div id="productList"></div>
 
-  <button id="manualButton">
-    手動輸入條碼
-  </button>
+    <div class="divider"></div>
 
-</div>
+    <div class="order-actions">
+      <button id="saveButton" type="button">
+        暫存
+      </button>
 
-<div class="divider"></div>
+      <button id="completeButton" type="button">
+        完成抄貨
+      </button>
+    </div>
+  </main>
 
-<div id="productList">
-
-</div>
-
-<div class="divider"></div>
-
-<div class="order-actions">
-
-  <button id="saveButton">
-    暫存
-  </button>
-
-  <button id="completeButton">
-    完成抄貨
-  </button>
-
-</div>
+  <script src="js/scan.js?v=11"></script>
+</body>
 
 </html>
