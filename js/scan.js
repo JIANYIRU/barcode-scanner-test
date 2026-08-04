@@ -67,18 +67,14 @@ function bindEvents() {
 async function openCamera() {
   const cameraArea = document.getElementById("cameraArea");
   const cameraStatus = document.getElementById("cameraStatus");
+  const scanActions = document.querySelector(".scan-actions");
 
   if (isCameraRunning) {
     return;
   }
 
-  if (typeof Html5Qrcode === "undefined") {
-    cameraStatus.textContent = "條碼掃描元件載入失敗。";
-    cameraArea.hidden = false;
-    return;
-  }
-
   cameraArea.hidden = false;
+  scanActions.classList.add("camera-open");
   cameraStatus.textContent = "正在開啟相機…";
 
   try {
@@ -87,16 +83,22 @@ async function openCamera() {
     await html5QrCode.start(
       { facingMode: "environment" },
       {
-        fps: 10,
+        fps: 15,
+
+        // 手機相機常見比例
+        aspectRatio: 4 / 3,
+
+        // 商品條碼使用寬、扁的掃描框
         qrbox: function (viewfinderWidth, viewfinderHeight) {
           return {
-            width: Math.floor(viewfinderWidth * 0.85),
+            width: Math.floor(viewfinderWidth * 0.92),
             height: Math.min(
-              160,
-              Math.floor(viewfinderHeight * 0.35)
+              130,
+              Math.floor(viewfinderHeight * 0.28)
             )
           };
         },
+
         formatsToSupport: [
           Html5QrcodeSupportedFormats.EAN_13,
           Html5QrcodeSupportedFormats.EAN_8,
@@ -107,18 +109,20 @@ async function openCamera() {
       },
       handleScanSuccess,
       function () {
-        // 掃描途中讀不到條碼是正常狀況，不顯示錯誤。
+        // 尚未辨識成功時不顯示錯誤
       }
     );
 
     isCameraRunning = true;
-    cameraStatus.textContent = "請將商品條碼對準掃描框。";
+    cameraStatus.textContent = "請將商品條碼橫向對準掃描框。";
+
   } catch (error) {
     console.error("相機啟動失敗：", error);
 
     cameraStatus.textContent =
-      "相機啟動失敗，請確認已允許相機權限，並使用手機 Chrome 或 Safari 開啟。";
+      "相機啟動失敗，請確認已允許相機權限。";
 
+    scanActions.classList.remove("camera-open");
     html5QrCode = null;
     isCameraRunning = false;
   }
@@ -130,6 +134,7 @@ async function openCamera() {
 async function closeCamera() {
   const cameraArea = document.getElementById("cameraArea");
   const cameraStatus = document.getElementById("cameraStatus");
+  const scanActions = document.querySelector(".scan-actions");
 
   try {
     if (html5QrCode && isCameraRunning) {
@@ -141,19 +146,29 @@ async function closeCamera() {
   } finally {
     html5QrCode = null;
     isCameraRunning = false;
+
     cameraStatus.textContent = "";
     cameraArea.hidden = true;
+    scanActions.classList.remove("camera-open");
   }
 }
 
 /**
  * 掃描成功
  */
-function handleScanSuccess(decodedText) {
+async function handleScanSuccess(decodedText) {
   console.log("掃描成功：", decodedText);
+
+  if (navigator.vibrate) {
+    navigator.vibrate(100);
+  }
 
   document.getElementById("cameraStatus").textContent =
     `掃描成功：${decodedText}`;
+
+  await closeCamera();
+
+  alert(`掃描成功：${decodedText}`);
 }
 
 /**
