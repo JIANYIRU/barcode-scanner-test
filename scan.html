@@ -19,28 +19,44 @@ content="width=device-width, initial-scale=1">
 
 <main class="page">
 
-<section class="system-card">
-
-<h1>開始抄貨</h1>
+<h1>新增抄貨單</h1>
 
 <div class="divider"></div>
 
-<p id="orderInfo"></p>
+<div id="orderInfo"></div>
 
 <div class="divider"></div>
 
-<button id="scanButton">
+<div class="scan-actions">
 
-開啟相機
+  <button id="scanButton">
+    開啟相機
+  </button>
 
-</button>
+  <button id="manualButton">
+    手動輸入條碼
+  </button>
 
-</section>
+</div>
 
-</main>
+<div class="divider"></div>
 
-<script src="js/scan.js?v=6"></script>
+<div id="productList">
 
-</body>
+</div>
+
+<div class="divider"></div>
+
+<div class="order-actions">
+
+  <button id="saveButton">
+    暫存
+  </button>
+
+  <button id="completeButton">
+    完成抄貨
+  </button>
+
+</div>
 
 </html>
