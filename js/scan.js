@@ -156,19 +156,18 @@ async function closeCamera() {
 /**
  * 掃描成功
  */
-async function handleScanSuccess(decodedText) {
-  console.log("掃描成功：", decodedText);
+function handleScanSuccess(decodedText) {
 
-  if (navigator.vibrate) {
-    navigator.vibrate(100);
-  }
+    console.log("掃描成功：", decodedText);
 
-  document.getElementById("cameraStatus").textContent =
-    `掃描成功：${decodedText}`;
+    if (navigator.vibrate) {
+        navigator.vibrate(100);
+    }
 
-  await closeCamera();
+    document.getElementById("cameraStatus").textContent =
+        `掃描成功：${decodedText}`;
 
-  alert(`掃描成功：${decodedText}`);
+    // 下一步會在這裡查商品 API
 }
 
 /**
