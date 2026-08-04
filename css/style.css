@@ -395,6 +395,32 @@ h1 {
   text-align: center;
 }
 
+/* 小條碼掃描：相機變焦 */
 
+.zoom-controls {
+  width: 100%;
+  margin: 14px auto 0;
+  padding: 12px 14px;
+  border: 1px solid #d5dce6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.zoom-controls[hidden] {
+  display: none;
+}
+
+.zoom-controls label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+#zoomSlider {
+  width: 100%;
+  min-height: 36px;
+}
 
 
