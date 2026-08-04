@@ -1,4 +1,4 @@
-console.log("main.js 已載入");
+console.log("main.js v9 已載入");
 
 document.addEventListener("DOMContentLoaded", init);
 
