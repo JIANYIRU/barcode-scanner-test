@@ -11,7 +11,7 @@
 
   <title>開始抄貨</title>
 
-  <link rel="stylesheet" href="css/style.css?v=10">
+  <link rel="stylesheet" href="css/style.css?v=12">
 </head>
 
 <body>
@@ -25,6 +25,16 @@
     <div class="divider"></div>
 
     <div class="scan-actions">
+<div id="cameraArea" class="camera-area" hidden>
+  <div id="reader"></div>
+
+  <button id="closeCameraButton" type="button">
+    關閉相機
+  </button>
+
+  <p id="cameraStatus"></p>
+</div>
+      
       <button id="scanButton" type="button">
         開啟相機
       </button>
@@ -51,7 +61,8 @@
     </div>
   </main>
 
-  <script src="js/scan.js?v=11"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="js/scan.js?v=12"></script>
 </body>
 
 </html>
