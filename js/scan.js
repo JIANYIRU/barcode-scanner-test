@@ -1,27 +1,69 @@
 document.addEventListener("DOMContentLoaded", init);
 
+/**
+ * 初始化新增抄貨單頁面
+ */
 function init() {
+  renderOrderInfo();
+  bindEvents();
+}
 
-    const params = new URLSearchParams(window.location.search);
+/**
+ * 顯示通路、店家與日期
+ */
+function renderOrderInfo() {
+  const params = new URLSearchParams(window.location.search);
 
-    const channel = params.get("channel");
+  const channel = params.get("channel") || "";
+  const branch = params.get("branch") || "";
+  const date = params.get("date") || "";
 
-    const branch = params.get("branch");
+  const orderInfo = document.getElementById("orderInfo");
 
-    const date = params.get("date");
+  orderInfo.innerHTML = `
+    <span><strong>通路：</strong>${escapeHtml(channel)}</span>
+    <span><strong>店家：</strong>${escapeHtml(branch)}</span>
+    <span><strong>日期：</strong>${escapeHtml(date)}</span>
+  `;
+}
 
-    document.getElementById("orderInfo").innerHTML = `
-        <strong>通路：</strong>${channel}<br>
-        <strong>店家：</strong>${branch}<br>
-        <strong>日期：</strong>${date}
-    `;
+/**
+ * 綁定按鈕事件
+ */
+function bindEvents() {
+  document
+    .getElementById("scanButton")
+    .addEventListener("click", function () {
+      alert("相機功能將於 Sprint 5 開發");
+    });
 
-    document
-        .getElementById("scanButton")
-        .addEventListener("click", function () {
+  document
+    .getElementById("manualButton")
+    .addEventListener("click", function () {
+      alert("手動輸入條碼功能將於 Sprint 5 開發");
+    });
 
-            alert("下一步開始串相機");
+  document
+    .getElementById("saveButton")
+    .addEventListener("click", function () {
+      alert("暫存功能開發中");
+    });
 
-        });
+  document
+    .getElementById("completeButton")
+    .addEventListener("click", function () {
+      alert("完成抄貨功能開發中");
+    });
+}
 
+/**
+ * 避免網址參數被當成 HTML 執行
+ */
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
