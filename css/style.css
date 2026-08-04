@@ -193,6 +193,121 @@ h1 {
   }
 }
 
+/* ===== Scan Page V1 ===== */
+
+.scan-card {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+#orderInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#orderInfo > div,
+#orderInfo > span,
+#orderInfo > p {
+  margin: 0;
+}
+
+.scan-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.scan-actions button {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid #2868d7;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #2868d7;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#productList {
+  width: 100%;
+  min-height: 140px;
+  padding: 0;
+  border: 1px solid #d5dce6;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.order-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+#saveButton,
+#completeButton {
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#saveButton {
+  background: #2868d7;
+}
+
+#completeButton {
+  background: #2d9b67;
+}
+
+.scan-actions button:active,
+#saveButton:active,
+#completeButton:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 700px) {
+  #orderInfo {
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .scan-actions,
+  .order-actions {
+    gap: 8px;
+  }
+
+  .scan-actions button {
+    min-height: 50px;
+    padding: 8px;
+    font-size: 16px;
+  }
+
+  #saveButton,
+  #completeButton {
+    min-height: 54px;
+    padding: 8px;
+    font-size: 17px;
+  }
+
+  #productList {
+    min-height: 110px;
+  }
+}
+
+
+
+
+
 
 
 
