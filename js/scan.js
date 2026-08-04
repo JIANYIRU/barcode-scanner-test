@@ -6,9 +6,15 @@ let html5QrCode = null;
 let isCameraRunning = false;
 let cameraCapabilities = null;
 
-// 防止連續掃描
+// 防止同一時間重複查詢 API
 let isScanLocked = false;
+
+// 紀錄最近一次掃描
 let lastBarcode = "";
+let lastScanTime = 0;
+
+// 暫存最近查到的商品，下一步加入商品列表時會使用
+let currentProduct = null;
 
 /**
  * 初始化新增抄貨單頁面
@@ -168,34 +174,81 @@ cameraCapabilities = null;
   }
 }
 
-/**
- * 掃描成功
- */
-function handleScanSuccess(decodedText) {
 
-  // 已鎖定就直接忽略
+/**
+ * 掃描成功後查詢商品
+ */
+async function handleScanSuccess(decodedText) {
+  const barcode = String(decodedText || "").trim();
+
+  if (!barcode) {
+    return;
+  }
+
+  const now = Date.now();
+
+  // API 正在查詢時，先忽略其他掃描結果
   if (isScanLocked) {
     return;
   }
 
-  isScanLocked = true;
-
-  console.log("掃描成功：", decodedText);
-
-  if (navigator.vibrate) {
-    navigator.vibrate(100);
+  // 同一條碼 1.5 秒內重複出現時忽略
+  if (
+    barcode === lastBarcode &&
+    now - lastScanTime < 1500
+  ) {
+    return;
   }
 
-  document.getElementById("cameraStatus").textContent =
-    `掃描成功：${decodedText}`;
+  isScanLocked = true;
+  lastBarcode = barcode;
+  lastScanTime = now;
 
-  lastBarcode = decodedText;
+  const cameraStatus =
+    document.getElementById("cameraStatus");
 
-  // 0.8 秒後解除鎖定
-  setTimeout(() => {
-    isScanLocked = false;
-  }, 800);
+  cameraStatus.textContent =
+    `正在查詢商品：${barcode}`;
 
+  try {
+    const result = await api("findProduct", {
+      barcode: barcode
+    });
+
+    console.log("商品查詢結果：", result);
+
+    if (!result.success || !result.product) {
+      currentProduct = null;
+
+      cameraStatus.textContent =
+        result.message || `查無商品：${barcode}`;
+
+      return;
+    }
+
+    currentProduct = result.product;
+
+    if (navigator.vibrate) {
+      navigator.vibrate(100);
+    }
+
+    cameraStatus.textContent =
+      `掃描成功：${currentProduct.name}｜${currentProduct.barcode}`;
+
+  } catch (error) {
+    console.error("商品查詢失敗：", error);
+
+    currentProduct = null;
+
+    cameraStatus.textContent =
+      "商品查詢失敗，請確認網路連線後再試一次。";
+
+  } finally {
+    // 稍微停頓後繼續接受下一個條碼
+    setTimeout(function () {
+      isScanLocked = false;
+    }, 800);
+  }
 }
 
 
