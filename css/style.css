@@ -304,7 +304,46 @@ h1 {
   }
 }
 
+/* Sprint 5 - Camera */
 
+.camera-area {
+  margin-top: 16px;
+}
+
+.camera-area[hidden] {
+  display: none;
+}
+
+#reader {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #d5dce6;
+  border-radius: 12px;
+  background: #000000;
+}
+
+#closeCameraButton {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  min-height: 50px;
+  margin: 12px auto 0;
+  border: 0;
+  border-radius: 12px;
+  background: #5f6878;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#cameraStatus {
+  margin: 10px 0 0;
+  font-size: 16px;
+  text-align: center;
+}
 
 
 
