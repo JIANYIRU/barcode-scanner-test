@@ -45,7 +45,18 @@ function renderOrderInfo() {
  * 綁定按鈕事件
  */
 function bindEvents() {
+document
+  .getElementById("minusButton")
+  .addEventListener("click", decreaseQuantity);
 
+document
+  .getElementById("plusButton")
+  .addEventListener("click", increaseQuantity);
+
+document
+  .getElementById("quantityInput")
+  .addEventListener("change", normalizeQuantity);
+  
 document
   .getElementById("zoomSlider")
   .addEventListener("input", changeCameraZoom);
@@ -372,10 +383,65 @@ function showProductPreview(product) {
   previewName.textContent =
     product.name || "";
 
+document.getElementById("quantityInput").value = 1;
+document.getElementById("remarkInput").value = "";
+  
   productPreview.hidden = false;
 }
 
 
+/**
+ * 數量減 1，最低為 1
+ */
+function decreaseQuantity() {
+  const quantityInput =
+    document.getElementById("quantityInput");
+
+  const currentQuantity =
+    getValidQuantity(quantityInput.value);
+
+  quantityInput.value =
+    Math.max(1, currentQuantity - 1);
+}
+
+/**
+ * 數量加 1
+ */
+function increaseQuantity() {
+  const quantityInput =
+    document.getElementById("quantityInput");
+
+  const currentQuantity =
+    getValidQuantity(quantityInput.value);
+
+  quantityInput.value =
+    currentQuantity + 1;
+}
+
+/**
+ * 修正直接輸入的數量
+ */
+function normalizeQuantity() {
+  const quantityInput =
+    document.getElementById("quantityInput");
+
+  quantityInput.value =
+    getValidQuantity(quantityInput.value);
+}
+
+/**
+ * 取得合法的正整數數量
+ */
+function getValidQuantity(value) {
+  const quantity =
+    Number.parseInt(value, 10);
+
+  if (!Number.isInteger(quantity) || quantity < 1) {
+    return 1;
+  }
+
+  return quantity;
+}
 
 
 
