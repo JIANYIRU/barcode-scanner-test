@@ -449,82 +449,215 @@ function getValidQuantity(value) {
   return quantity;
 }
 
+/**
+ * 加入商品至抄貨列表
+ */
 function addProductToList() {
-
   if (!currentProduct) {
     alert("目前沒有商品。");
     return;
   }
 
-  const quantity = Number(
+  const quantity = getValidQuantity(
     document.getElementById("quantityInput").value
   );
 
   const remark =
-    document.getElementById("remarkInput").value.trim();
+    document
+      .getElementById("remarkInput")
+      .value
+      .trim();
 
-  orderItems.push({
+  const existingItem =
+    orderItems.find(function (item) {
+      return String(item.barcode) ===
+        String(currentProduct.barcode);
+    });
 
-    barcode: currentProduct.barcode,
+  if (existingItem) {
+    existingItem.quantity += quantity;
 
-    name: currentProduct.name,
+    if (remark) {
+      existingItem.remark = remark;
+    }
+  } else {
+    orderItems.push({
+      barcode: currentProduct.barcode,
+      name: currentProduct.name,
+      quantity: quantity,
+      remark: remark
+    });
+  }
 
-    quantity: quantity,
+  renderProductList();
 
-    remark: remark
+  // 清空商品辨識區
+  currentProduct = null;
 
-  });
+  document
+    .getElementById("productPreview")
+    .hidden = true;
 
+  document
+    .getElementById("quantityInput")
+    .value = 1;
+
+  document
+    .getElementById("remarkInput")
+    .value = "";
+}
+/**
+ * 顯示抄貨商品列表
+ */
 function renderProductList() {
-
   const productList =
     document.getElementById("productList");
 
   productList.innerHTML = "";
 
   orderItems.forEach(function (item, index) {
+    const row = document.createElement("div");
 
-    productList.innerHTML += `
+    const hasRemark =
+      String(item.remark || "").trim() !== "";
 
-      <div class="order-item">
+    row.className = hasRemark
+      ? "order-item order-item-warning"
+      : "order-item";
 
-        <div class="order-barcode">
-          ${item.barcode}
-        </div>
+    row.innerHTML = `
+      <span class="order-barcode">
+        ${escapeHtml(item.barcode)}
+      </span>
 
-        <div class="order-name">
-          ${item.name}
-        </div>
+      <span class="order-name">
+        ${escapeHtml(item.name)}
+      </span>
 
-        <div class="order-quantity">
-          ${item.quantity}
-        </div>
+      <span class="order-quantity">
+        ${item.quantity}
+      </span>
 
-        <div class="order-remark">
-          ${item.remark || ""}
-        </div>
+      <span class="order-remark">
+        ${
+          hasRemark
+            ? `📝 ${escapeHtml(item.remark)}`
+            : ""
+        }
+      </span>
 
-        <div class="order-action">
+      <button
+        class="edit-item-button"
+        type="button"
+        data-index="${index}">
+        修改
+      </button>
 
-          <button
-            onclick="editItem(${index})">
-            修改
-          </button>
-
-          <button
-            onclick="deleteItem(${index})">
-            刪除
-          </button>
-
-        </div>
-
-      </div>
-
+      <button
+        class="delete-item-button"
+        type="button"
+        data-index="${index}">
+        刪除
+      </button>
     `;
 
+    productList.appendChild(row);
   });
 
+  bindProductListEvents();
 }
+
+/**
+ * 綁定商品列表的修改與刪除事件
+ */
+function bindProductListEvents() {
+  document
+    .querySelectorAll(".edit-item-button")
+    .forEach(function (button) {
+      button.addEventListener("click", function () {
+        const index =
+          Number(button.dataset.index);
+
+        editOrderItem(index);
+      });
+    });
+
+  document
+    .querySelectorAll(".delete-item-button")
+    .forEach(function (button) {
+      button.addEventListener("click", function () {
+        const index =
+          Number(button.dataset.index);
+
+        deleteOrderItem(index);
+      });
+    });
+}
+
+/**
+ * 修改商品數量與備註
+ */
+function editOrderItem(index) {
+  const item = orderItems[index];
+
+  if (!item) {
+    return;
+  }
+
+  const newQuantity = window.prompt(
+    `修改「${item.name}」的數量`,
+    String(item.quantity)
+  );
+
+  // 按取消，不修改
+  if (newQuantity === null) {
+    return;
+  }
+
+  const quantity =
+    getValidQuantity(newQuantity);
+
+  const newRemark = window.prompt(
+    `修改「${item.name}」的備註`,
+    item.remark || ""
+  );
+
+  // 備註視窗按取消，整次修改取消
+  if (newRemark === null) {
+    return;
+  }
+
+  item.quantity = quantity;
+  item.remark = newRemark.trim();
+
+  renderProductList();
+}
+
+
+/**
+ * 刪除整筆商品
+ */
+function deleteOrderItem(index) {
+  const item = orderItems[index];
+
+  if (!item) {
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `確定要刪除「${item.name}」嗎？`
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  orderItems.splice(index, 1);
+
+  renderProductList();
+}
+
+
 
 
 
