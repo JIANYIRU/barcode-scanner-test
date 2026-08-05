@@ -226,14 +226,16 @@ async function handleScanSuccess(decodedText) {
       return;
     }
 
-    currentProduct = result.product;
+ currentProduct = result.product;
 
-    if (navigator.vibrate) {
-      navigator.vibrate(100);
-    }
+if (navigator.vibrate) {
+  navigator.vibrate(100);
+}
 
-    cameraStatus.textContent =
-      `掃描成功：${currentProduct.name}｜${currentProduct.barcode}`;
+showProductPreview(currentProduct);
+
+cameraStatus.textContent =
+  `已辨識商品：${currentProduct.name}`;
 
  } catch (error) {
 
@@ -349,3 +351,31 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
+
+/**
+ * 顯示商品辨識結果
+ */
+function showProductPreview(product) {
+  const productPreview =
+    document.getElementById("productPreview");
+
+  const previewBarcode =
+    document.getElementById("previewBarcode");
+
+  const previewName =
+    document.getElementById("previewName");
+
+  previewBarcode.textContent =
+    product.barcode || "";
+
+  previewName.textContent =
+    product.name || "";
+
+  productPreview.hidden = false;
+}
+
+
+
+
+
