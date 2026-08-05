@@ -538,9 +538,74 @@ h1 {
   display: block;
 }
 
+/* 商品辨識區：縮短高度、全部靠左 */
 
+#productPreview {
+  margin-top: 0;
+  padding-top: 0;
+}
 
+.preview-card {
+  padding-top: 0;
+}
 
+.preview-barcode {
+  margin-top: 0;
+  margin-bottom: 4px;
+  text-align: left;
+  font-size: 16px;
+  color: #666666;
+}
+
+.preview-name {
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: left;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0d2b5c;
+}
+
+.quantity-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.quantity-title {
+  margin-right: 4px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#quantityInput {
+  width: 70px;
+  min-height: 42px;
+  text-align: center;
+}
+
+#minusButton,
+#plusButton {
+  width: 46px;
+  min-height: 42px;
+  padding: 0;
+  font-size: 20px;
+}
+
+.remark-title {
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
+#remarkInput {
+  min-height: 90px;
+}
+
+#productPreview .preview-card > :first-child {
+  margin-top: 0;
+}
 
 
 
