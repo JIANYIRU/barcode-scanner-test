@@ -494,3 +494,57 @@ h1 {
     margin-bottom:10px;
 
 }
+
+/* 商品辨識區與抄貨列表間距 */
+
+#productPreview {
+  margin-bottom: 24px;
+}
+
+.preview-card {
+  padding-bottom: 20px;
+}
+
+#remarkInput {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+}
+
+#addProductButton {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #2d9b67;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#productList {
+  margin-top: 24px;
+}
+
+
+#productList:empty {
+  display: none;
+}
+
+#productList:not(:empty) {
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
+
