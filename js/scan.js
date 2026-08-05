@@ -449,11 +449,82 @@ function getValidQuantity(value) {
   return quantity;
 }
 
-function addProductToList(){
+function addProductToList() {
+
+  if (!currentProduct) {
+    alert("目前沒有商品。");
+    return;
+  }
+
+  const quantity = Number(
+    document.getElementById("quantityInput").value
+  );
+
+  const remark =
+    document.getElementById("remarkInput").value.trim();
+
+  orderItems.push({
+
+    barcode: currentProduct.barcode,
+
+    name: currentProduct.name,
+
+    quantity: quantity,
+
+    remark: remark
+
+  });
+
+function renderProductList() {
+
+  const productList =
+    document.getElementById("productList");
+
+  productList.innerHTML = "";
+
+  orderItems.forEach(function (item, index) {
+
+    productList.innerHTML += `
+
+      <div class="order-item">
+
+        <div class="order-barcode">
+          ${item.barcode}
+        </div>
+
+        <div class="order-name">
+          ${item.name}
+        </div>
+
+        <div class="order-quantity">
+          ${item.quantity}
+        </div>
+
+        <div class="order-remark">
+          ${item.remark || ""}
+        </div>
+
+        <div class="order-action">
+
+          <button
+            onclick="editItem(${index})">
+            修改
+          </button>
+
+          <button
+            onclick="deleteItem(${index})">
+            刪除
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
 
 }
-
-
 
 
 
