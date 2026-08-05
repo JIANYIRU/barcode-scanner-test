@@ -149,3 +149,121 @@ function deleteOrderItem(index) {
   renderProductList();
   saveOrderItems();
 }
+
+/**
+ * ==========================================
+ * 商品加入與數量控制
+ * ==========================================
+ */
+
+/**
+ * 將已辨識商品加入抄貨列表
+ */
+function addProductToList() {
+  if (!currentProduct) {
+    alert("目前沒有已辨識的商品。");
+    return;
+  }
+
+  const quantity = getValidQuantity(
+    document.getElementById("quantityInput").value
+  );
+
+  const remark =
+    document
+      .getElementById("remarkInput")
+      .value
+      .trim();
+
+  const existingItem =
+    orderItems.find(function (item) {
+      return String(item.barcode) ===
+        String(currentProduct.barcode);
+    });
+
+  if (existingItem) {
+    existingItem.quantity += quantity;
+
+    if (remark) {
+      existingItem.remark = remark;
+    }
+  } else {
+    orderItems.push({
+      barcode: currentProduct.barcode,
+      name: currentProduct.name,
+      quantity: quantity,
+      remark: remark
+    });
+  }
+
+  renderProductList();
+  saveOrderItems();
+  clearProductPreview();
+}
+
+/**
+ * 清空商品辨識區
+ */
+function clearProductPreview() {
+  currentProduct = null;
+
+  document
+    .getElementById("productPreview")
+    .hidden = true;
+
+  document
+    .getElementById("quantityInput")
+    .value = 1;
+
+  document
+    .getElementById("remarkInput")
+    .value = "";
+}
+
+/**
+ * 數量減 1，最低為 1
+ */
+function decreaseQuantity() {
+  const quantityInput =
+    document.getElementById("quantityInput");
+
+  const quantity =
+    getValidQuantity(quantityInput.value);
+
+  quantityInput.value =
+    Math.max(1, quantity - 1);
+}
+
+/**
+ * 數量加 1
+ */
+function increaseQuantity() {
+  const quantityInput =
+    document.getElementById("quantityInput");
+
+  const quantity =
+    getValidQuantity(quantityInput.value);
+
+  quantityInput.value =
+    quantity + 1;
+}
+
+/**
+ * 修正直接輸入的數量
+ */
+function normalizeQuantity() {
+  const quantityInput =
+    document.getElementById("quantityInput");
+
+  quantityInput.value =
+    getValidQuantity(quantityInput.value);
+}
+
+
+
+
+
+
+
+
+
