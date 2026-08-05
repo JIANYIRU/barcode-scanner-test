@@ -664,7 +664,77 @@ h1 {
 
 }
 
+/* 抄貨商品列表 */
 
+.order-item {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1.4fr)
+    minmax(100px, 1.2fr)
+    60px
+    minmax(120px, 1.5fr)
+    56px
+    56px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #d5dce6;
+  border-radius: 10px;
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.order-item-warning {
+  background: #fff6c9;
+  border-color: #e7ca62;
+}
+
+.order-barcode {
+  font-size: 14px;
+  color: #5f6878;
+  white-space: nowrap;
+}
+
+.order-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.order-quantity {
+  font-size: 17px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.order-remark {
+  font-size: 15px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.edit-item-button,
+.delete-item-button {
+  min-height: 40px;
+  padding: 6px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-item-button {
+  border: 1px solid #2868d7;
+  background: #ffffff;
+  color: #2868d7;
+}
+
+.delete-item-button {
+  border: 1px solid #c74444;
+  background: #ffffff;
+  color: #c74444;
+}
 
 
 
