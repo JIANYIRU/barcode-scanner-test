@@ -423,4 +423,74 @@ h1 {
   min-height: 36px;
 }
 
+.preview-card{
 
+    padding:20px;
+
+}
+
+.preview-barcode{
+
+    text-align:center;
+
+    font-size:18px;
+
+    color:#666;
+
+    margin-bottom:8px;
+
+}
+
+.preview-name{
+
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#0d2b5c;
+
+    margin-bottom:18px;
+
+}
+
+.quantity-row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:12px;
+
+}
+
+.quantity-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-right:10px;
+
+}
+
+#quantityInput{
+
+    width:70px;
+
+    text-align:center;
+
+}
+
+.remark-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+}
