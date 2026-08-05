@@ -15,6 +15,7 @@ let lastScanTime = 0;
 
 // 暫存最近查到的商品，下一步加入商品列表時會使用
 let currentProduct = null;
+let orderItems = [];
 
 /**
  * 初始化新增抄貨單頁面
@@ -45,6 +46,11 @@ function renderOrderInfo() {
  * 綁定按鈕事件
  */
 function bindEvents() {
+
+document
+  .getElementById("addProductButton")
+  .addEventListener("click", addProductToList);  
+  
 document
   .getElementById("minusButton")
   .addEventListener("click", decreaseQuantity);
@@ -442,6 +448,13 @@ function getValidQuantity(value) {
 
   return quantity;
 }
+
+function addProductToList(){
+
+}
+
+
+
 
 
 
