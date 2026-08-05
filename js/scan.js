@@ -23,6 +23,7 @@ let orderItems = [];
 function init() {
   renderOrderInfo();
   bindEvents();
+  loadOrderItems();
 }
 
 /**
@@ -489,7 +490,8 @@ function addProductToList() {
     });
   }
 
-  renderProductList();
+ renderProductList();
+saveOrderItems();
 
   // 清空商品辨識區
   currentProduct = null;
@@ -628,9 +630,10 @@ function editOrderItem(index) {
   }
 
   item.quantity = quantity;
-  item.remark = newRemark.trim();
+item.remark = newRemark.trim();
 
-  renderProductList();
+renderProductList();
+saveOrderItems();
 }
 
 
@@ -654,9 +657,57 @@ function deleteOrderItem(index) {
 
   orderItems.splice(index, 1);
 
-  renderProductList();
+renderProductList();
+saveOrderItems();
 }
 
+/**
+ * 儲存目前抄貨單
+ */
+function saveOrderItems() {
+
+  localStorage.setItem(
+
+    "orderItems",
+
+    JSON.stringify(orderItems)
+
+  );
+
+}
+
+/**
+ * 讀取抄貨單
+ */
+/**
+ * 讀取抄貨單
+ */
+function loadOrderItems() {
+  const data =
+    localStorage.getItem("orderItems");
+
+  if (!data) {
+    return;
+  }
+
+  try {
+    const parsedData = JSON.parse(data);
+
+    if (!Array.isArray(parsedData)) {
+      throw new Error("暫存資料格式錯誤");
+    }
+
+    orderItems = parsedData;
+
+    renderProductList();
+  } catch (error) {
+    console.error("讀取暫存抄貨單失敗：", error);
+
+    localStorage.removeItem("orderItems");
+
+    orderItems = [];
+  }
+}
 
 
 
