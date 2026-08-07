@@ -13,7 +13,20 @@ let orderItems = [];
 function init() {
   renderOrderInfo();
   bindEvents();
-  loadCurrentOrder();
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const resume =
+    params.get("resume") === "1";
+
+  if (resume) {
+    loadCurrentOrder();
+  } else {
+    orderItems = [];
+    currentProduct = null;
+    renderProductList();
+  }
 }
 
 /**
