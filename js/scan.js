@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", init);
 let currentProduct = null;
 let orderItems = [];
 
+// 目前正在編輯的暫存抄貨單 ID
+let currentDraftId = "";
+
 /**
  * 初始化新增抄貨單頁面
  */
@@ -14,20 +17,17 @@ function init() {
   renderOrderInfo();
   bindEvents();
 
-  // 先執行一次舊版暫存資料轉換
   migrateOldCurrentOrder();
 
   const params =
     new URLSearchParams(window.location.search);
 
-  const draftId =
+  currentDraftId =
     params.get("draftId") || "";
 
-  if (draftId) {
-    // 繼續既有暫存單
-    loadCurrentOrder(draftId);
+  if (currentDraftId) {
+    loadCurrentOrder(currentDraftId);
   } else {
-    // 新增抄貨單
     orderItems = [];
     currentProduct = null;
     renderProductList();
@@ -136,14 +136,8 @@ function handleSaveOrder() {
     return;
   }
 
-  const params =
-    new URLSearchParams(window.location.search);
-
-  const draftId =
-    params.get("draftId") || "";
-
   const result =
-    saveCurrentOrder(draftId);
+    saveCurrentOrder(currentDraftId);
 
   if (!result.success) {
     alert(
@@ -152,14 +146,13 @@ function handleSaveOrder() {
     return;
   }
 
+  // 新單第一次儲存後，記住它的 ID
+  currentDraftId = result.draftId;
+
   alert("抄貨單已暫存。");
 
-  // 回首頁
   window.location.href = "index.html";
 }
-
-
-
 
 
 
