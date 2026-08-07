@@ -14,15 +14,20 @@ function init() {
   renderOrderInfo();
   bindEvents();
 
+  // 先執行一次舊版暫存資料轉換
+  migrateOldCurrentOrder();
+
   const params =
     new URLSearchParams(window.location.search);
 
-  const resume =
-    params.get("resume") === "1";
+  const draftId =
+    params.get("draftId") || "";
 
-  if (resume) {
-    loadCurrentOrder();
+  if (draftId) {
+    // 繼續既有暫存單
+    loadCurrentOrder(draftId);
   } else {
+    // 新增抄貨單
     orderItems = [];
     currentProduct = null;
     renderProductList();
@@ -131,7 +136,14 @@ function handleSaveOrder() {
     return;
   }
 
-  const result = saveCurrentOrder();
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const draftId =
+    params.get("draftId") || "";
+
+  const result =
+    saveCurrentOrder(draftId);
 
   if (!result.success) {
     alert(
@@ -142,14 +154,9 @@ function handleSaveOrder() {
 
   alert("抄貨單已暫存。");
 
-  // 清空目前工作區
-  orderItems = [];
-  currentProduct = null;
-
   // 回首頁
   window.location.href = "index.html";
 }
-
 
 
 
