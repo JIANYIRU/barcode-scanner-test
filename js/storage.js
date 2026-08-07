@@ -1,46 +1,109 @@
-const ORDER_ITEMS_STORAGE_KEY = "orderItems";
+/**
+ * ==========================================
+ * 抄貨單暫存
+ * ==========================================
+ */
+
+const CURRENT_ORDER_STORAGE_KEY = "currentOrder";
 
 /**
- * 儲存目前抄貨商品
+ * 儲存完整抄貨單
  */
-function saveOrderItems() {
+function saveCurrentOrder() {
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
+  const currentOrder = {
+    channel:
+      params.get("channel") || "",
+
+    branch:
+      params.get("branch") || "",
+
+    date:
+      params.get("date") || "",
+
+    items:
+      orderItems
+  };
+
   try {
     localStorage.setItem(
-      ORDER_ITEMS_STORAGE_KEY,
-      JSON.stringify(orderItems)
+      CURRENT_ORDER_STORAGE_KEY,
+      JSON.stringify(currentOrder)
     );
+
+    return {
+      success: true,
+      order: currentOrder
+    };
   } catch (error) {
-    console.error("儲存暫存抄貨單失敗：", error);
+    console.error(
+      "儲存完整抄貨單失敗：",
+      error
+    );
+
+    return {
+      success: false,
+      message: "暫存失敗。"
+    };
   }
 }
 
 /**
- * 讀取暫存抄貨商品
+ * 讀取完整抄貨單
  */
-function loadOrderItems() {
+function loadCurrentOrder() {
   const data =
-    localStorage.getItem(ORDER_ITEMS_STORAGE_KEY);
+    localStorage.getItem(
+      CURRENT_ORDER_STORAGE_KEY
+    );
 
   if (!data) {
-    return;
+    return null;
   }
 
   try {
-    const parsedData = JSON.parse(data);
+    const currentOrder =
+      JSON.parse(data);
 
-    if (!Array.isArray(parsedData)) {
-      throw new Error("暫存資料格式錯誤");
+    if (
+      !currentOrder ||
+      !Array.isArray(currentOrder.items)
+    ) {
+      throw new Error(
+        "暫存資料格式錯誤"
+      );
     }
 
-    orderItems = parsedData;
+    orderItems =
+      currentOrder.items;
+
     renderProductList();
+
+    return currentOrder;
   } catch (error) {
-    console.error("讀取暫存抄貨單失敗：", error);
+    console.error(
+      "讀取完整抄貨單失敗：",
+      error
+    );
 
     localStorage.removeItem(
-      ORDER_ITEMS_STORAGE_KEY
+      CURRENT_ORDER_STORAGE_KEY
     );
 
     orderItems = [];
+
+    return null;
   }
+}
+
+/**
+ * 清除完整抄貨單
+ */
+function clearCurrentOrder() {
+  localStorage.removeItem(
+    CURRENT_ORDER_STORAGE_KEY
+  );
 }
