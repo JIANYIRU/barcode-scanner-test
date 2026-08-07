@@ -811,3 +811,46 @@ h1 {
   font-weight: 800;
   cursor: pointer;
 }
+
+
+/* 抄貨打單 */
+
+.print-order-card {
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #d5dce6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.print-order-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.print-order-main strong {
+  font-size: 20px;
+}
+
+.print-order-meta {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+  color: #667085;
+  font-size: 15px;
+}
+
+.view-print-order-button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #8a56d6;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+}
+
