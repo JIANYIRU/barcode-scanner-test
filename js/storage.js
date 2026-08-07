@@ -88,10 +88,8 @@ function saveCurrentOrder(draftId = "") {
       window.location.search
     );
 
-  const id =
-    draftId ||
-    params.get("draftId") ||
-    createDraftId();
+ const id =
+  draftId || createDraftId();
 
   const currentOrder = {
     id: id,
