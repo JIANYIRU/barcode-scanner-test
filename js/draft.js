@@ -1,76 +1,58 @@
 document.addEventListener(
   "DOMContentLoaded",
-  renderCurrentDraft
+  renderDraftOrders
 );
 
 /**
- * 顯示目前暫存的抄貨單
+ * ==========================================
+ * 進行中的抄貨
+ * ==========================================
  */
-function renderCurrentDraft() {
+
+/**
+ * 顯示所有暫存抄貨單
+ */
+function renderDraftOrders() {
   const draftContent =
     document.getElementById("draftContent");
 
   const data =
-    localStorage.getItem("currentOrder");
+    localStorage.getItem("draftOrders");
 
   if (!data) {
-    draftContent.innerHTML = `
-      <p class="empty-draft-message">
-        目前沒有進行中的抄貨。
-      </p>
-    `;
-
+    showEmptyDraftMessage();
     return;
   }
 
   try {
-    const currentOrder =
-      JSON.parse(data);
+    const drafts = JSON.parse(data);
 
     if (
-      !currentOrder ||
-      !Array.isArray(currentOrder.items)
+      !Array.isArray(drafts) ||
+      drafts.length === 0
     ) {
-      throw new Error("暫存資料格式錯誤");
+      showEmptyDraftMessage();
+      return;
     }
 
-    const channel =
-      currentOrder.channel || "";
+    draftContent.innerHTML = "";
 
-    const branch =
-      currentOrder.branch || "";
+    // 最近修改的排前面
+    drafts
+      .slice()
+      .sort(function (a, b) {
+        return String(b.updatedAt || "")
+          .localeCompare(
+            String(a.updatedAt || "")
+          );
+      })
+      .forEach(function (draft) {
+        const card =
+          createDraftCard(draft);
 
-    const date =
-      currentOrder.date || "";
+        draftContent.appendChild(card);
+      });
 
-    const itemCount =
-      currentOrder.items.length;
-
-const continueUrl =
-  `scan.html?channel=${encodeURIComponent(channel)}`
-  + `&branch=${encodeURIComponent(branch)}`
-  + `&date=${encodeURIComponent(date)}`
-  + `&resume=1`;
-
-    draftContent.innerHTML = `
-      <div class="draft-card">
-        <div class="draft-main">
-          <strong>${escapeHtml(channel)}</strong>
-          <span>${escapeHtml(branch)}</span>
-          <span>${itemCount} 項</span>
-        </div>
-
-        <div class="draft-date">
-          ${escapeHtml(date)}
-        </div>
-
-        <a
-          class="continue-draft-button"
-          href="${continueUrl}">
-          繼續抄貨
-        </a>
-      </div>
-    `;
   } catch (error) {
     console.error(
       "讀取進行中抄貨失敗：",
@@ -85,14 +67,94 @@ const continueUrl =
   }
 }
 
+
 /**
- * 避免 HTML 被當成程式執行
+ * 建立單張暫存抄貨卡片
+ */
+function createDraftCard(draft) {
+  const card =
+    document.createElement("div");
+
+  card.className = "draft-card";
+
+  const channel =
+    draft.channel || "";
+
+  const branch =
+    draft.branch || "";
+
+  const date =
+    draft.date || "";
+
+  const itemCount =
+    Array.isArray(draft.items)
+      ? draft.items.length
+      : 0;
+
+  const draftId =
+    draft.id || "";
+
+  const continueUrl =
+    `scan.html?channel=${encodeURIComponent(channel)}`
+    + `&branch=${encodeURIComponent(branch)}`
+    + `&date=${encodeURIComponent(date)}`
+    + `&draftId=${encodeURIComponent(draftId)}`;
+
+  card.innerHTML = `
+    <div class="draft-main">
+
+      <strong>
+        ${escapeHtml(channel)}
+      </strong>
+
+      <span>
+        ${escapeHtml(branch)}
+      </span>
+
+      <span>
+        ${itemCount} 項
+      </span>
+
+    </div>
+
+    <div class="draft-date">
+      ${escapeHtml(date)}
+    </div>
+
+    <a
+      class="continue-draft-button"
+      href="${continueUrl}">
+      繼續抄貨
+    </a>
+  `;
+
+  return card;
+}
+
+
+/**
+ * 顯示沒有暫存資料
+ */
+function showEmptyDraftMessage() {
+  const draftContent =
+    document.getElementById("draftContent");
+
+  draftContent.innerHTML = `
+    <p class="empty-draft-message">
+      目前沒有進行中的抄貨。
+    </p>
+  `;
+}
+
+
+/**
+ * 避免文字被當成 HTML 執行
  */
 function escapeHtml(value) {
   return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
