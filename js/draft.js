@@ -37,7 +37,6 @@ function renderDraftOrders() {
 
     draftContent.innerHTML = "";
 
-    // 最近修改的排前面
     drafts
       .slice()
       .sort(function (a, b) {
@@ -68,7 +67,6 @@ function renderDraftOrders() {
     `;
   }
 }
-
 
 /**
  * 建立單張暫存抄貨卡片
@@ -125,25 +123,24 @@ function createDraftCard(draft) {
 
     <div class="draft-actions">
 
-  <a
-    class="continue-draft-button"
-    href="${continueUrl}">
-    繼續抄貨
-  </a>
+      <a
+        class="continue-draft-button"
+        href="${continueUrl}">
+        繼續抄貨
+      </a>
 
-  <button
-    class="delete-draft-button"
-    type="button"
-    data-draft-id="${escapeHtml(draftId)}">
-    刪除
-  </button>
+      <button
+        class="delete-draft-button"
+        type="button"
+        data-draft-id="${escapeHtml(draftId)}">
+        刪除
+      </button>
 
-</div>
+    </div>
   `;
 
   return card;
 }
-
 
 /**
  * 顯示沒有暫存資料
@@ -158,20 +155,6 @@ function showEmptyDraftMessage() {
     </p>
   `;
 }
-
-
-/**
- * 避免文字被當成 HTML 執行
- */
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
 
 /**
  * 刪除指定的暫存抄貨單
@@ -219,7 +202,6 @@ function deleteDraftOrder(draftId) {
       JSON.stringify(newDrafts)
     );
 
-    // 刪除後重新顯示列表
     renderDraftOrders();
 
   } catch (error) {
@@ -231,7 +213,6 @@ function deleteDraftOrder(draftId) {
     alert("刪除失敗。");
   }
 }
-
 
 /**
  * 綁定暫存單刪除按鈕
@@ -249,9 +230,20 @@ function bindDraftDeleteEvents() {
             button.dataset.draftId;
 
           deleteDraftOrder(draftId);
-
         }
       );
 
     });
+}
+
+/**
+ * 避免文字被當成 HTML 執行
+ */
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
