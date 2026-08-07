@@ -1,20 +1,101 @@
 /**
  * ==========================================
- * 抄貨單暫存
+ * 多張抄貨單暫存
  * ==========================================
  */
 
-const CURRENT_ORDER_STORAGE_KEY = "currentOrder";
+const DRAFT_ORDERS_STORAGE_KEY = "draftOrders";
+const OLD_CURRENT_ORDER_STORAGE_KEY = "currentOrder";
 
 /**
- * 儲存完整抄貨單
+ * 產生每張抄貨單的唯一識別碼
  */
-function saveCurrentOrder() {
-  const params = new URLSearchParams(
-    window.location.search
+function createDraftId() {
+  return (
+    "draft-" +
+    Date.now() +
+    "-" +
+    Math.random().toString(36).slice(2, 8)
   );
+}
+
+/**
+ * 讀取所有暫存抄貨單
+ */
+function getDraftOrders() {
+  const data =
+    localStorage.getItem(
+      DRAFT_ORDERS_STORAGE_KEY
+    );
+
+  if (!data) {
+    return [];
+  }
+
+  try {
+    const drafts = JSON.parse(data);
+
+    if (!Array.isArray(drafts)) {
+      throw new Error("暫存清單格式錯誤");
+    }
+
+    return drafts;
+  } catch (error) {
+    console.error(
+      "讀取多張暫存抄貨單失敗：",
+      error
+    );
+
+    localStorage.removeItem(
+      DRAFT_ORDERS_STORAGE_KEY
+    );
+
+    return [];
+  }
+}
+
+/**
+ * 儲存所有暫存抄貨單
+ */
+function saveDraftOrders(drafts) {
+  try {
+    localStorage.setItem(
+      DRAFT_ORDERS_STORAGE_KEY,
+      JSON.stringify(drafts)
+    );
+
+    return true;
+  } catch (error) {
+    console.error(
+      "儲存多張暫存抄貨單失敗：",
+      error
+    );
+
+    return false;
+  }
+}
+
+/**
+ * 儲存目前正在編輯的抄貨單
+ *
+ * @param {string} draftId 既有暫存單 ID；
+ *                         新單可傳空字串
+ * @return {Object} 儲存結果
+ */
+function saveCurrentOrder(draftId = "") {
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const id =
+    draftId ||
+    params.get("draftId") ||
+    createDraftId();
 
   const currentOrder = {
+    id: id,
+
     channel:
       params.get("channel") || "",
 
@@ -25,85 +106,145 @@ function saveCurrentOrder() {
       params.get("date") || "",
 
     items:
-      orderItems
+      orderItems,
+
+    updatedAt:
+      new Date().toISOString()
   };
 
-  try {
-    localStorage.setItem(
-      CURRENT_ORDER_STORAGE_KEY,
-      JSON.stringify(currentOrder)
-    );
+  const drafts = getDraftOrders();
 
-    return {
-      success: true,
-      order: currentOrder
-    };
-  } catch (error) {
-    console.error(
-      "儲存完整抄貨單失敗：",
-      error
-    );
+  const existingIndex =
+    drafts.findIndex(function (draft) {
+      return draft.id === id;
+    });
 
+  if (existingIndex >= 0) {
+    // 更新原本那一張，不建立重複資料
+    drafts[existingIndex] = currentOrder;
+  } else {
+    // 新增一張新的暫存抄貨單
+    drafts.push(currentOrder);
+  }
+
+  const success =
+    saveDraftOrders(drafts);
+
+  if (!success) {
     return {
       success: false,
       message: "暫存失敗。"
     };
   }
+
+  return {
+    success: true,
+    draftId: id,
+    order: currentOrder
+  };
 }
 
 /**
- * 讀取完整抄貨單
+ * 依 draftId 讀取指定的暫存抄貨單
  */
-function loadCurrentOrder() {
-  const data =
-    localStorage.getItem(
-      CURRENT_ORDER_STORAGE_KEY
+function loadCurrentOrder(draftId) {
+  if (!draftId) {
+    return null;
+  }
+
+  const drafts = getDraftOrders();
+
+  const currentOrder =
+    drafts.find(function (draft) {
+      return draft.id === draftId;
+    });
+
+  if (!currentOrder) {
+    return null;
+  }
+
+  if (!Array.isArray(currentOrder.items)) {
+    console.error(
+      "暫存抄貨單商品格式錯誤"
     );
 
-  if (!data) {
     return null;
+  }
+
+  orderItems = currentOrder.items;
+
+  renderProductList();
+
+  return currentOrder;
+}
+
+/**
+ * 刪除指定的暫存抄貨單
+ */
+function clearCurrentOrder(draftId) {
+  if (!draftId) {
+    return;
+  }
+
+  const drafts =
+    getDraftOrders().filter(
+      function (draft) {
+        return draft.id !== draftId;
+      }
+    );
+
+  saveDraftOrders(drafts);
+}
+
+/**
+ * 將舊版單張 currentOrder 搬到多張暫存格式
+ *
+ * 只會執行一次，避免舊資料消失。
+ */
+function migrateOldCurrentOrder() {
+  const oldData =
+    localStorage.getItem(
+      OLD_CURRENT_ORDER_STORAGE_KEY
+    );
+
+  if (!oldData) {
+    return;
   }
 
   try {
-    const currentOrder =
-      JSON.parse(data);
+    const oldOrder =
+      JSON.parse(oldData);
 
     if (
-      !currentOrder ||
-      !Array.isArray(currentOrder.items)
+      !oldOrder ||
+      !Array.isArray(oldOrder.items)
     ) {
       throw new Error(
-        "暫存資料格式錯誤"
+        "舊版暫存格式錯誤"
       );
     }
 
-    orderItems =
-      currentOrder.items;
+    const drafts = getDraftOrders();
 
-    renderProductList();
+    drafts.push({
+      id: createDraftId(),
+      channel: oldOrder.channel || "",
+      branch: oldOrder.branch || "",
+      date: oldOrder.date || "",
+      items: oldOrder.items,
+      updatedAt:
+        new Date().toISOString()
+    });
 
-    return currentOrder;
-  } catch (error) {
-    console.error(
-      "讀取完整抄貨單失敗：",
-      error
-    );
+    saveDraftOrders(drafts);
 
     localStorage.removeItem(
-      CURRENT_ORDER_STORAGE_KEY
+      OLD_CURRENT_ORDER_STORAGE_KEY
     );
-
-    orderItems = [];
-
-    return null;
+  } catch (error) {
+    console.error(
+      "轉換舊版暫存抄貨單失敗：",
+      error
+    );
   }
-}
-
-/**
- * 清除完整抄貨單
- */
-function clearCurrentOrder() {
-  localStorage.removeItem(
-    CURRENT_ORDER_STORAGE_KEY
-  );
 }
