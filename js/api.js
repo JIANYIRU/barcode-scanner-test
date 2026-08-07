@@ -1,7 +1,7 @@
 console.log("api.js v17 已載入");
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbzhYLD2QZVNsKfZTwkvAV74TxG0a6vgfRh9P6CU1oH4L1Qor8PALtOVuIZHrLU7KKySMQ/exec";
+  "https://script.google.com/macros/s/AKfycbzQ2wqNscumy42vIPHXx9PT8tkRRcj6WtAV7TsgN8rczvGI-4r1_NhV5FANajZ2R5sh7A/exec";
 
 /**
  * 呼叫 Apps Script API
@@ -41,3 +41,52 @@ async function api(action, params = {}) {
     );
   }
 }
+
+/**
+ * 呼叫 Apps Script POST API
+ */
+async function apiPost(action, data = {}) {
+  const requestBody = {
+    action,
+    ...data
+  };
+
+  console.log(
+    "正在呼叫 POST API：",
+    requestBody
+  );
+
+  const response = await fetch(API_URL, {
+    method: "POST",
+    redirect: "follow",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  const responseText =
+    await response.text();
+
+  console.log(
+    "POST API 原始回應：",
+    responseText
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `API 連線失敗：HTTP ${response.status}`
+    );
+  }
+
+  try {
+    return JSON.parse(responseText);
+  } catch (error) {
+    throw new Error(
+      `API 回傳內容不是 JSON：${responseText.slice(0, 100)}`
+    );
+  }
+}
+
+
