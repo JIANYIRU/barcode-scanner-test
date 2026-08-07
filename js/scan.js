@@ -22,14 +22,23 @@ function init() {
   const params =
     new URLSearchParams(window.location.search);
 
-  currentDraftId =
+  const existingDraftId =
     params.get("draftId") || "";
 
-  if (currentDraftId) {
+  if (existingDraftId) {
+    // 從「進行中的抄貨」回來
+    currentDraftId = existingDraftId;
+
     loadCurrentOrder(currentDraftId);
+
   } else {
+    // 全新抄貨單：
+    // 一進頁面就先給它獨立 ID
+    currentDraftId = createDraftId();
+
     orderItems = [];
     currentProduct = null;
+
     renderProductList();
   }
 }
