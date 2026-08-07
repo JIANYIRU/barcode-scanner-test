@@ -736,5 +736,54 @@ h1 {
   color: #c74444;
 }
 
+/* 進行中的抄貨 */
 
+.draft-card {
+  padding: 18px;
+  border: 1px solid #d5dce6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.draft-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.draft-main strong {
+  font-size: 20px;
+}
+
+.draft-date {
+  margin-top: 10px;
+  color: #667085;
+  font-size: 16px;
+}
+
+.continue-draft-button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 52px;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #2d9b67;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.empty-draft-message {
+  margin: 0;
+  padding: 28px 12px;
+  color: #667085;
+  font-size: 17px;
+  text-align: center;
+}
 
