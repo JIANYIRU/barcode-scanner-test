@@ -53,6 +53,8 @@ function renderDraftOrders() {
         draftContent.appendChild(card);
       });
 
+    bindDraftDeleteEvents();
+
   } catch (error) {
     console.error(
       "讀取進行中抄貨失敗：",
@@ -121,11 +123,22 @@ function createDraftCard(draft) {
       ${escapeHtml(date)}
     </div>
 
-    <a
-      class="continue-draft-button"
-      href="${continueUrl}">
-      繼續抄貨
-    </a>
+    <div class="draft-actions">
+
+  <a
+    class="continue-draft-button"
+    href="${continueUrl}">
+    繼續抄貨
+  </a>
+
+  <button
+    class="delete-draft-button"
+    type="button"
+    data-draft-id="${escapeHtml(draftId)}">
+    刪除
+  </button>
+
+</div>
   `;
 
   return card;
@@ -157,4 +170,88 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+
+/**
+ * 刪除指定的暫存抄貨單
+ */
+function deleteDraftOrder(draftId) {
+  const data =
+    localStorage.getItem("draftOrders");
+
+  if (!data) {
+    return;
+  }
+
+  try {
+    const drafts = JSON.parse(data);
+
+    if (!Array.isArray(drafts)) {
+      return;
+    }
+
+    const draft =
+      drafts.find(function (item) {
+        return item.id === draftId;
+      });
+
+    if (!draft) {
+      return;
+    }
+
+    const confirmed =
+      window.confirm(
+        `確定要刪除「${draft.channel}｜${draft.branch}」的暫存抄貨單嗎？`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const newDrafts =
+      drafts.filter(function (item) {
+        return item.id !== draftId;
+      });
+
+    localStorage.setItem(
+      "draftOrders",
+      JSON.stringify(newDrafts)
+    );
+
+    // 刪除後重新顯示列表
+    renderDraftOrders();
+
+  } catch (error) {
+    console.error(
+      "刪除暫存抄貨單失敗：",
+      error
+    );
+
+    alert("刪除失敗。");
+  }
+}
+
+
+/**
+ * 綁定暫存單刪除按鈕
+ */
+function bindDraftDeleteEvents() {
+  document
+    .querySelectorAll(".delete-draft-button")
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          const draftId =
+            button.dataset.draftId;
+
+          deleteDraftOrder(draftId);
+
+        }
+      );
+
+    });
 }
