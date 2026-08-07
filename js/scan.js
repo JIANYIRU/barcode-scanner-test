@@ -13,7 +13,7 @@ let orderItems = [];
 function init() {
   renderOrderInfo();
   bindEvents();
-  loadOrderItems();
+  loadCurrentOrder();
 }
 
 /**
@@ -73,10 +73,11 @@ document
     });
 
   document
-    .getElementById("saveButton")
-    .addEventListener("click", function () {
-      alert("暫存功能開發中");
-    });
+  .getElementById("saveButton")
+  .addEventListener(
+    "click",
+    handleSaveOrder
+  );
 
   document
     .getElementById("completeButton")
@@ -110,4 +111,37 @@ document.getElementById("remarkInput").value = "";
   
   productPreview.hidden = false;
 }
+
+/**
+ * 暫存整張抄貨單
+ */
+function handleSaveOrder() {
+  if (orderItems.length === 0) {
+    alert("目前沒有商品可以暫存。");
+    return;
+  }
+
+  const result =
+    saveCurrentOrder();
+
+  if (!result.success) {
+    alert(
+      result.message || "暫存失敗。"
+    );
+    return;
+  }
+
+  alert("抄貨單已暫存。");
+}
+
+
+
+
+
+
+
+
+
+
+
 
