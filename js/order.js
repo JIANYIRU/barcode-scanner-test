@@ -123,7 +123,13 @@ function editOrderItem(index) {
     newRemark.trim();
 
   renderProductList();
-  saveCurrentOrder();
+  const params =
+  new URLSearchParams(window.location.search);
+
+const draftId =
+  params.get("draftId") || "";
+
+saveCurrentOrder(draftId);
 }
 
 /**
@@ -147,7 +153,13 @@ function deleteOrderItem(index) {
   orderItems.splice(index, 1);
 
   renderProductList();
-  saveCurrentOrder();
+  const params =
+  new URLSearchParams(window.location.search);
+
+const draftId =
+  params.get("draftId") || "";
+
+saveCurrentOrder(draftId);
 }
 
 /**
@@ -197,7 +209,13 @@ function addProductToList() {
   }
 
   renderProductList();
- saveCurrentOrder();
+ const params =
+  new URLSearchParams(window.location.search);
+
+const draftId =
+  params.get("draftId") || "";
+
+saveCurrentOrder(draftId);
   clearProductPreview();
 }
 
