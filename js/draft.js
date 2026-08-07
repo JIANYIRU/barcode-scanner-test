@@ -46,10 +46,11 @@ function renderCurrentDraft() {
     const itemCount =
       currentOrder.items.length;
 
-    const continueUrl =
-      `scan.html?channel=${encodeURIComponent(channel)}`
-      + `&branch=${encodeURIComponent(branch)}`
-      + `&date=${encodeURIComponent(date)}`;
+const continueUrl =
+  `scan.html?channel=${encodeURIComponent(channel)}`
+  + `&branch=${encodeURIComponent(branch)}`
+  + `&date=${encodeURIComponent(date)}`
+  + `&resume=1`;
 
     draftContent.innerHTML = `
       <div class="draft-card">
