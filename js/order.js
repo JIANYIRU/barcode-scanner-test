@@ -123,7 +123,7 @@ function editOrderItem(index) {
     newRemark.trim();
 
   renderProductList();
-  saveOrderItems();
+  saveCurrentOrder();
 }
 
 /**
@@ -147,7 +147,7 @@ function deleteOrderItem(index) {
   orderItems.splice(index, 1);
 
   renderProductList();
-  saveOrderItems();
+  saveCurrentOrder();
 }
 
 /**
@@ -197,7 +197,7 @@ function addProductToList() {
   }
 
   renderProductList();
-  saveOrderItems();
+ saveCurrentOrder();
   clearProductPreview();
 }
 
