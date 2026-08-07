@@ -101,7 +101,7 @@ document
   .getElementById("completeButton")
   .addEventListener(
     "click",
-    testCompleteOrderApi
+    handleCompleteOrder
   );
 }
 
@@ -155,53 +155,120 @@ function handleSaveOrder() {
   window.location.href = "index.html";
 }
 
-async function testCompleteOrderApi() {
-  const testOrder = {
-    id: "WEB-TEST-001",
-    date: "2026-08-07",
-    channel: "小點",
-    branch: "中華店",
-    items: [
-      {
-        barcode: "4710126398221",
-        name: "義美草莓乾",
-        quantity: 3,
-        remark: "前端測試"
-      }
-    ]
-  };
+/**
+ * ==========================================
+ * 完成抄貨
+ * ==========================================
+ */
 
-  try {
-    const result = await apiPost(
-      "completeOrder",
-      {
-        order: testOrder
-      }
+/**
+ * 完成目前抄貨單
+ */
+async function handleCompleteOrder() {
+
+  if (orderItems.length === 0) {
+    alert("目前沒有商品可以完成抄貨。");
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      `確定要完成這張抄貨單嗎？\n\n共 ${orderItems.length} 項商品`
     );
 
+  if (!confirmed) {
+    return;
+  }
+
+  const completeButton =
+    document.getElementById("completeButton");
+
+  // 防止連續點擊
+  completeButton.disabled = true;
+  completeButton.textContent = "完成中…";
+
+  try {
+
+    /*
+     * 先把目前最新資料存進暫存。
+     * 同時確保新開的抄貨單也一定有 draftId。
+     */
+    const saveResult =
+      saveCurrentOrder(currentDraftId);
+
+    if (!saveResult.success) {
+      throw new Error(
+        saveResult.message ||
+        "無法建立抄貨單資料。"
+      );
+    }
+
+    currentDraftId =
+      saveResult.draftId;
+
+    const currentOrder =
+      saveResult.order;
+
+    /*
+     * 將完整抄貨單送到 Apps Script
+     */
+    const result =
+      await apiPost(
+        "completeOrder",
+        {
+          order: currentOrder
+        }
+      );
+
     console.log(
-      "完成抄貨 API 測試結果：",
+      "完成抄貨結果：",
       result
     );
 
-    alert(
-      result.message ||
-      "API 測試完成"
+    /*
+     * Google Sheets 沒有確認成功
+     * → 暫存單絕對不能刪除
+     */
+    if (!result.success) {
+      throw new Error(
+        result.message ||
+        "完成抄貨失敗。"
+      );
+    }
+
+    /*
+     * Google Sheets 已確認寫入成功
+     * → 才刪除本機這一張暫存單
+     */
+    clearCurrentOrder(
+      currentDraftId
     );
 
+    alert(
+      `抄貨完成！\n共完成 ${result.itemCount || orderItems.length} 項商品。`
+    );
+
+    // 回首頁
+    window.location.href =
+      "index.html";
+
   } catch (error) {
+
     console.error(
-      "完成抄貨 API 測試失敗：",
+      "完成抄貨失敗：",
       error
     );
 
     alert(
-      `測試失敗：${error.message}`
+      `完成抄貨失敗：${error.message}\n\n暫存資料仍然保留，可以稍後再試。`
     );
+
+    // 失敗才恢復按鈕
+    completeButton.disabled = false;
+    completeButton.textContent =
+      "完成抄貨";
   }
 }
-
-
 
 
 
