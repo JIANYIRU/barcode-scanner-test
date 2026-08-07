@@ -787,3 +787,27 @@ h1 {
   text-align: center;
 }
 
+/* 暫存單操作按鈕 */
+
+.draft-actions {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.draft-actions .continue-draft-button {
+  margin-top: 0;
+}
+
+.delete-draft-button {
+  min-height: 52px;
+  padding: 12px;
+  border: 1px solid #c74444;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #c74444;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
