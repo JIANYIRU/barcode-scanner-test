@@ -112,17 +112,13 @@ document.getElementById("remarkInput").value = "";
   productPreview.hidden = false;
 }
 
-/**
- * 暫存整張抄貨單
- */
 function handleSaveOrder() {
   if (orderItems.length === 0) {
     alert("目前沒有商品可以暫存。");
     return;
   }
 
-  const result =
-    saveCurrentOrder();
+  const result = saveCurrentOrder();
 
   if (!result.success) {
     alert(
@@ -132,8 +128,14 @@ function handleSaveOrder() {
   }
 
   alert("抄貨單已暫存。");
-}
 
+  // 清空目前工作區
+  orderItems = [];
+  currentProduct = null;
+
+  // 回首頁
+  window.location.href = "index.html";
+}
 
 
 
