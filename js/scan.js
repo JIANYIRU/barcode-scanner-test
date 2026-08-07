@@ -98,10 +98,11 @@ document
   );
 
   document
-    .getElementById("completeButton")
-    .addEventListener("click", function () {
-      alert("完成抄貨功能開發中");
-    });
+  .getElementById("completeButton")
+  .addEventListener(
+    "click",
+    testCompleteOrderApi
+  );
 }
 
 
@@ -154,7 +155,51 @@ function handleSaveOrder() {
   window.location.href = "index.html";
 }
 
+async function testCompleteOrderApi() {
+  const testOrder = {
+    id: "WEB-TEST-001",
+    date: "2026-08-07",
+    channel: "小點",
+    branch: "中華店",
+    items: [
+      {
+        barcode: "4710126398221",
+        name: "義美草莓乾",
+        quantity: 3,
+        remark: "前端測試"
+      }
+    ]
+  };
 
+  try {
+    const result = await apiPost(
+      "completeOrder",
+      {
+        order: testOrder
+      }
+    );
+
+    console.log(
+      "完成抄貨 API 測試結果：",
+      result
+    );
+
+    alert(
+      result.message ||
+      "API 測試完成"
+    );
+
+  } catch (error) {
+    console.error(
+      "完成抄貨 API 測試失敗：",
+      error
+    );
+
+    alert(
+      `測試失敗：${error.message}`
+    );
+  }
+}
 
 
 
