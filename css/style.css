@@ -1036,7 +1036,29 @@ h1 {
   background: #fff6c9;
 }
 
+/* ==========================================
+   抄貨單明細－電腦版
+   ========================================== */
 
+@media (min-width: 768px) {
+
+  .print-detail-table {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .print-detail-table-header,
+  .print-detail-row {
+    width: 100%;
+
+    grid-template-columns:
+      28%
+      32%
+      10%
+      30%;
+  }
+
+}
 
 
 
