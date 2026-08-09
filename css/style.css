@@ -945,7 +945,96 @@ h1 {
   text-align: center;
 }
 
+/* 整個表格可以左右滑動 */
+.print-detail-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
+/* 表頭與商品共用同一個寬度 */
+.print-detail-table {
+  width: 470px;
+  min-width: 470px;
+}
+
+/* 表頭 */
+.print-detail-table-header {
+  display: grid;
+
+  grid-template-columns:
+    150px
+    130px
+    50px
+    140px;
+
+  align-items: center;
+
+  width: 470px;
+  box-sizing: border-box;
+
+  border-bottom: 2px solid #aeb8c6;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* 每一筆商品 */
+.print-detail-row {
+  display: grid;
+
+  grid-template-columns:
+    150px
+    130px
+    50px
+    140px;
+
+  align-items: center;
+
+  width: 470px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #d8dee8;
+
+  background: #ffffff;
+}
+
+/* 每個欄位 */
+.print-detail-table-header > div,
+.print-detail-row > div {
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 10px 8px;
+
+  white-space: nowrap;
+}
+
+/* 商品名稱 */
+.print-detail-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+
+/* 數量 */
+.print-detail-quantity {
+  text-align: center;
+  font-weight: 800;
+}
+
+/* 備註 */
+.print-detail-remark {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 有備註商品 */
+.print-detail-row-warning {
+  background: #fff6c9;
+}
 
 
 
