@@ -918,7 +918,34 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.print-detail-table-header {
+  display: grid;
 
+  grid-template-columns:
+    minmax(110px, 1.4fr)
+    minmax(80px, 1fr)
+    40px
+    minmax(50px, 0.8fr);
+
+  gap: 6px;
+  align-items: center;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 8px 6px;
+
+  border-bottom: 2px solid #aeb8c6;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.print-detail-table-header div:nth-child(3) {
+  text-align: center;
+}
 
 
 
