@@ -1052,13 +1052,35 @@ h1 {
     width: 100%;
 
     grid-template-columns:
-      28%
-      32%
-      10%
-      30%;
+      220px
+      200px
+      70px
+      minmax(180px, 1fr);
   }
 
 }
 
+.print-detail-name,
+.print-detail-quantity,
+.print-detail-remark,
+.print-detail-barcode {
+  min-width: 0;
+  box-sizing: border-box;
+}
 
+.print-detail-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
+.print-detail-quantity {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.print-detail-remark {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
