@@ -111,12 +111,11 @@ function renderCompletedOrders(orders) {
 
       </div>
 
-      <button
-        class="view-print-order-button"
-        type="button"
-        data-order-id="${escapePrintHtml(order.id)}">
-        查看
-      </button>
+<a
+  class="view-print-order-button"
+  href="print-detail.html?id=${encodeURIComponent(order.id)}">
+  查看
+</a>
     `;
 
     printOrderList.appendChild(card);
