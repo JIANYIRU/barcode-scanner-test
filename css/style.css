@@ -876,19 +876,18 @@ h1 {
 
 .print-detail-row {
   display: grid;
-  grid-template-columns:
-    minmax(130px, 1.3fr)
-    minmax(120px, 1.5fr)
-    70px
-    minmax(140px, 1.5fr);
 
-  gap: 10px;
+  grid-template-columns:
+    36% 32% 10% 22%;
+
   align-items: center;
 
-  padding: 10px 12px;
+  width: 100%;
+  box-sizing: border-box;
 
-  border-bottom:
-    1px solid #d8dee8;
+  padding: 10px 6px;
+
+  border-bottom: 1px solid #d8dee8;
 
   background: #ffffff;
 }
@@ -907,27 +906,26 @@ h1 {
   font-weight: 700;
 }
 
-.print-detail-quantity {
-  font-size: 17px;
-  font-weight: 800;
+.print-detail-quantity,
+.print-detail-table-header div:nth-child(3) {
   text-align: center;
 }
 
 .print-detail-remark {
-  font-size: 14px;
-  overflow-wrap: anywhere;
+  min-width: 0;
+  font-size: 12px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .print-detail-table-header {
   display: grid;
 
   grid-template-columns:
-    minmax(110px, 1.4fr)
-    minmax(80px, 1fr)
-    40px
-    minmax(50px, 0.8fr);
+    36% 32% 10% 22%;
 
-  gap: 6px;
   align-items: center;
 
   width: 100%;
