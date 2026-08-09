@@ -854,3 +854,8 @@ h1 {
   font-weight: 800;
 }
 
+.view-print-order-button {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
