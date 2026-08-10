@@ -1126,3 +1126,23 @@ grid-template-columns:
 
   cursor: pointer;
 }
+
+
+.archive-order-button {
+  width: 100%;
+  min-height: 52px;
+
+  margin-bottom: 12px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: #2d9b67;
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
