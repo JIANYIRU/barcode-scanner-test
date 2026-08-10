@@ -153,26 +153,36 @@ row.innerHTML = `
     }
   </div>
 
-  <div class="print-detail-action">
+ <div class="print-detail-action">
 
-    <button
-      class="edit-completed-item-button"
-      type="button"
-      data-order-id="${escapeDetailHtml(order.id)}"
-      data-barcode="${escapeDetailHtml(item.barcode)}"
-      data-name="${escapeDetailHtml(item.name)}"
-      data-quantity="${item.quantity}"
-      data-remark="${escapeDetailHtml(item.remark || "")}">
-      修改
-    </button>
+  <button
+    class="edit-completed-item-button"
+    type="button"
+    data-order-id="${escapeDetailHtml(order.id)}"
+    data-barcode="${escapeDetailHtml(item.barcode)}"
+    data-name="${escapeDetailHtml(item.name)}"
+    data-quantity="${item.quantity}"
+    data-remark="${escapeDetailHtml(item.remark || "")}">
+    修改
+  </button>
 
-  </div>
+  <button
+    class="delete-completed-item-button"
+    type="button"
+    data-order-id="${escapeDetailHtml(order.id)}"
+    data-barcode="${escapeDetailHtml(item.barcode)}"
+    data-name="${escapeDetailHtml(item.name)}">
+    刪除
+  </button>
+
+</div>
 `;
 
     list.appendChild(row);
   });
 
 bindCompletedItemEditEvents();
+bindCompletedItemDeleteEvents();  
   
 }
 
@@ -199,6 +209,28 @@ function bindCompletedItemEditEvents() {
     });
 }
 
+/**
+ * 綁定已完成商品刪除按鈕
+ */
+function bindCompletedItemDeleteEvents() {
+
+  document
+    .querySelectorAll(
+      ".delete-completed-item-button"
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          deleteCompletedItem(button);
+
+        }
+      );
+
+    });
+}
 
 /**
  * 修改已完成抄貨商品
@@ -302,7 +334,77 @@ async function editCompletedItem(button) {
   }
 }
 
+/**
+ * 刪除已完成抄貨商品
+ */
+async function deleteCompletedItem(button) {
 
+  const orderId =
+    button.dataset.orderId || "";
+
+  const barcode =
+    button.dataset.barcode || "";
+
+  const name =
+    button.dataset.name || "";
+
+  const confirmed =
+    window.confirm(
+      `確定要刪除「${name}」嗎？`
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "刪除中…";
+
+  try {
+
+    const result =
+      await apiPost(
+        "deleteCompletedOrderItem",
+        {
+          data: {
+            orderId: orderId,
+            barcode: barcode
+          }
+        }
+      );
+
+    console.log(
+      "刪除已完成商品結果：",
+      result
+    );
+
+    if (!result.success) {
+      throw new Error(
+        result.message ||
+        "刪除失敗。"
+      );
+    }
+
+    alert("商品已刪除。");
+
+    // 重新讀取 Google Sheets 最新資料
+    await loadOrderDetail();
+
+  } catch (error) {
+
+    console.error(
+      "刪除商品失敗：",
+      error
+    );
+
+    alert(
+      `刪除失敗：${error.message}`
+    );
+
+    button.disabled = false;
+    button.textContent = "刪除";
+  }
+}
 
 /**
  * HTML 安全處理
