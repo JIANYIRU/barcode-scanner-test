@@ -1,6 +1,9 @@
 document.addEventListener(
   "DOMContentLoaded",
-  loadOrderDetail
+  function () {
+    loadOrderDetail();
+    bindArchiveOrderButton();
+  }
 );
 
 /**
@@ -418,3 +421,105 @@ function escapeDetailHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+/**
+ * 綁定確認建檔按鈕
+ */
+function bindArchiveOrderButton() {
+
+  const button =
+    document.getElementById(
+      "archiveOrderButton"
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.addEventListener(
+    "click",
+    handleArchiveOrder
+  );
+}
+
+/**
+ * 確認建檔目前抄貨單
+ */
+async function handleArchiveOrder() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const orderId =
+    params.get("id") || "";
+
+  if (!orderId) {
+    alert("找不到抄貨單 ID。");
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      "建檔後這張抄貨單會移入歷史資料，並從待建檔清單移除。\n\n確定要建檔嗎？"
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const button =
+    document.getElementById(
+      "archiveOrderButton"
+    );
+
+  button.disabled = true;
+  button.textContent = "建檔中…";
+
+  try {
+
+    const result =
+      await apiPost(
+        "archiveCompletedOrder",
+        {
+          orderId: orderId
+        }
+      );
+
+    console.log(
+      "建檔結果：",
+      result
+    );
+
+    if (!result.success) {
+      throw new Error(
+        result.message ||
+        "建檔失敗。"
+      );
+    }
+
+    alert(
+      `建檔成功！\n共 ${result.itemCount || 0} 項商品。`
+    );
+
+    window.location.href =
+      "print.html";
+
+  } catch (error) {
+
+    console.error(
+      "建檔失敗：",
+      error
+    );
+
+    alert(
+      `建檔失敗：${error.message}`
+    );
+
+    button.disabled = false;
+    button.textContent =
+      "確認建檔";
+  }
+}
+
