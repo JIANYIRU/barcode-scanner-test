@@ -132,31 +132,176 @@ function renderOrderDetail(order) {
       ? "print-detail-row print-detail-row-warning"
       : "print-detail-row";
 
-    row.innerHTML = `
-      <div class="print-detail-barcode">
-        ${escapeDetailHtml(item.barcode)}
-      </div>
+row.innerHTML = `
+  <div class="print-detail-barcode">
+    ${escapeDetailHtml(item.barcode)}
+  </div>
 
-      <div class="print-detail-name">
-        ${escapeDetailHtml(item.name)}
-      </div>
+  <div class="print-detail-name">
+    ${escapeDetailHtml(item.name)}
+  </div>
 
-      <div class="print-detail-quantity">
-        ${item.quantity}
-      </div>
+  <div class="print-detail-quantity">
+    ${item.quantity}
+  </div>
 
-      <div class="print-detail-remark">
-        ${
-          hasRemark
-            ? `📝 ${escapeDetailHtml(item.remark)}`
-            : ""
-        }
-      </div>
-    `;
+  <div class="print-detail-remark">
+    ${
+      hasRemark
+        ? `📝 ${escapeDetailHtml(item.remark)}`
+        : ""
+    }
+  </div>
+
+  <div class="print-detail-action">
+
+    <button
+      class="edit-completed-item-button"
+      type="button"
+      data-order-id="${escapeDetailHtml(order.id)}"
+      data-barcode="${escapeDetailHtml(item.barcode)}"
+      data-name="${escapeDetailHtml(item.name)}"
+      data-quantity="${item.quantity}"
+      data-remark="${escapeDetailHtml(item.remark || "")}">
+      修改
+    </button>
+
+  </div>
+`;
 
     list.appendChild(row);
   });
+
+bindCompletedItemEditEvents();
+  
 }
+
+/**
+ * 綁定已完成商品修改按鈕
+ */
+function bindCompletedItemEditEvents() {
+
+  document
+    .querySelectorAll(
+      ".edit-completed-item-button"
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          editCompletedItem(button);
+
+        }
+      );
+
+    });
+}
+
+
+/**
+ * 修改已完成抄貨商品
+ */
+async function editCompletedItem(button) {
+
+  const orderId =
+    button.dataset.orderId || "";
+
+  const barcode =
+    button.dataset.barcode || "";
+
+  const name =
+    button.dataset.name || "";
+
+  const oldQuantity =
+    button.dataset.quantity || "1";
+
+  const oldRemark =
+    button.dataset.remark || "";
+
+  const newQuantity =
+    window.prompt(
+      `修改「${name}」的數量`,
+      oldQuantity
+    );
+
+  if (newQuantity === null) {
+    return;
+  }
+
+  const quantity =
+    Number(newQuantity);
+
+  if (
+    !Number.isFinite(quantity) ||
+    quantity < 1
+  ) {
+    alert("請輸入正確的商品數量。");
+    return;
+  }
+
+  const newRemark =
+    window.prompt(
+      `修改「${name}」的備註`,
+      oldRemark
+    );
+
+  if (newRemark === null) {
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "修改中…";
+
+  try {
+
+    const result =
+      await apiPost(
+        "updateCompletedOrderItem",
+        {
+          data: {
+            orderId: orderId,
+            barcode: barcode,
+            quantity: quantity,
+            remark: newRemark.trim()
+          }
+        }
+      );
+
+    console.log(
+      "修改已完成商品結果：",
+      result
+    );
+
+    if (!result.success) {
+      throw new Error(
+        result.message ||
+        "修改失敗。"
+      );
+    }
+
+    alert("修改成功。");
+
+    // 重新讀取 Google Sheets 最新資料
+    await loadOrderDetail();
+
+  } catch (error) {
+
+    console.error(
+      "修改商品失敗：",
+      error
+    );
+
+    alert(
+      `修改失敗：${error.message}`
+    );
+
+    button.disabled = false;
+    button.textContent = "修改";
+  }
+}
+
 
 
 /**
