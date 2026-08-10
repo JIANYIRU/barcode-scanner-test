@@ -1,7 +1,7 @@
 console.log("api.js v17 已載入");
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbx72SVhLV6QPcK7bESsP-OH-PXfH-2_uKT_CwE3k6PWrlj1lcJg6N5U1fErujC2EZM9Uw/exec";
+  "https://script.google.com/macros/s/AKfycbzX_jhbEGZpgICPBxuRKgSz3eTW_pAJ10_ubzOppogMkjAAdm1NBAzPuLwdgjHEg7ZT9A/exec";
 
 /**
  * 呼叫 Apps Script API
