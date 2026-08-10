@@ -954,8 +954,8 @@ h1 {
 
 /* 表頭與商品共用同一個寬度 */
 .print-detail-table {
-  width: 540px;
-  min-width: 540px;
+  width: 580px;
+  min-width: 580px;
 }
 
 /* 表頭 */
@@ -967,7 +967,7 @@ grid-template-columns:
   130px
   50px
   140px
-  70px;
+  110px;
 
   align-items: center;
 
@@ -991,8 +991,8 @@ grid-template-columns:
   130px
   50px
   140px
-  70px;
-
+  110px;
+  
   align-items: center;
 
   width: 470px;
@@ -1058,7 +1058,7 @@ grid-template-columns:
   200px
   70px
   minmax(180px, 1fr)
-  80px;
+  110px;
   }
 
 }
@@ -1103,4 +1103,26 @@ grid-template-columns:
 
 .print-detail-action {
   text-align: center;
+}
+
+
+.print-detail-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+
+  white-space: nowrap;
+}
+
+.delete-completed-item-button {
+  border: 0;
+  border-radius: 6px;
+
+  padding: 7px 10px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
 }
