@@ -228,9 +228,13 @@ if (result.success) {
 function clearProductPreview() {
   currentProduct = null;
 
-  document
-    .getElementById("productPreview")
-    .hidden = true;
+  const productPreview =
+    document.getElementById("productPreview");
+
+  if (productPreview) {
+    productPreview.hidden = true;
+    productPreview.style.display = "none";
+  }
 
   document
     .getElementById("quantityInput")
@@ -239,6 +243,8 @@ function clearProductPreview() {
   document
     .getElementById("remarkInput")
     .value = "";
+
+  console.log("商品新增區已清空並隱藏");
 }
 
 /**
