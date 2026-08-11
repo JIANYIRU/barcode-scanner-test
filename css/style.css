@@ -1235,7 +1235,13 @@ grid-template-columns:
   color: #222222;
 }
 
+/* iPhone Safari：避免輸入時自動放大 */
 
+input,
+textarea,
+select {
+  font-size: 16px;
+}
 
 
 
