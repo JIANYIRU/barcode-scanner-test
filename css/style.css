@@ -1399,56 +1399,93 @@ select {
 
 /* ==========================================
    歷史抄貨明細
-   四欄固定對齊
    ========================================== */
 
-.print-detail-table-header,
-.print-detail-row {
+.history-detail-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.history-detail-table {
+  width: 100%;
+  min-width: 650px;
+}
+
+.history-detail-table-header,
+.history-detail-row {
   display: grid;
+
   grid-template-columns:
-    20% 40% 10% 30%;
+    180px
+    220px
+    70px
+    minmax(160px, 1fr);
+
   align-items: center;
+
   width: 100%;
   box-sizing: border-box;
 }
 
-.print-detail-table-header {
-  padding: 16px 12px;
-  font-weight: 700;
-  border-bottom: 1px solid #9aa7b8;
+.history-detail-table-header {
+  min-height: 48px;
+
+  border-bottom:
+    2px solid #aeb8c6;
+
+  font-size: 14px;
+  font-weight: 800;
 }
 
-.print-detail-row {
-  padding: 18px 12px;
-  border-bottom: 1px solid #d9e0e8;
+.history-detail-row {
+  min-height: 56px;
+
+  border-bottom:
+    1px solid #d8dee8;
 }
 
-.print-detail-barcode,
-.print-detail-name,
-.print-detail-quantity,
-.print-detail-remark {
+.history-detail-table-header > div,
+.history-detail-row > div {
   min-width: 0;
-  padding: 0 6px;
+
   box-sizing: border-box;
+
+  padding: 10px 8px;
+
+  white-space: nowrap;
 }
 
-.print-detail-barcode {
-  font-weight: 700;
+.history-detail-barcode {
+  font-size: 16px;
+  font-weight: 800;
 }
 
-.print-detail-name {
+.history-detail-name {
+  font-size: 15px;
   font-weight: 700;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.print-detail-quantity {
-  font-weight: 700;
+.history-detail-quantity {
+  font-size: 16px;
+  font-weight: 800;
+
   text-align: center;
 }
 
-.print-detail-remark {
-  word-break: break-word;
+.history-detail-remark {
+  font-size: 14px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+.history-detail-row-warning {
+  background: #fff6c9;
+}
 
 
 
