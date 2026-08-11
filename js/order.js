@@ -122,12 +122,16 @@ function editOrderItem(index) {
   item.remark =
     newRemark.trim();
 
-  renderProductList();
+renderProductList();
+
 const result =
   saveCurrentOrder(currentDraftId);
 
 if (result.success) {
   currentDraftId = result.draftId;
+
+  // 加入成功後清空並隱藏商品辨識區
+  clearProductPreview();
 }
 }
 
