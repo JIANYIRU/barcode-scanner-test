@@ -156,33 +156,32 @@ function renderHistoryDetail(order) {
         item.remark || ""
       ).trim() !== "";
 
-    row.className =
+   row.className =
+  hasRemark
+    ? "history-detail-row history-detail-row-warning"
+    : "history-detail-row";
+
+   row.innerHTML = `
+  <div class="history-detail-barcode">
+    ${escapeHistoryDetailHtml(item.barcode)}
+  </div>
+
+  <div class="history-detail-name">
+    ${escapeHistoryDetailHtml(item.name)}
+  </div>
+
+  <div class="history-detail-quantity">
+    ${item.quantity}
+  </div>
+
+  <div class="history-detail-remark">
+    ${
       hasRemark
-        ? "print-detail-row print-detail-row-warning"
-        : "print-detail-row";
-
-    row.innerHTML = `
-      <div class="print-detail-barcode">
-        ${escapeHistoryDetailHtml(item.barcode)}
-      </div>
-
-      <div class="print-detail-name">
-        ${escapeHistoryDetailHtml(item.name)}
-      </div>
-
-      <div class="print-detail-quantity">
-        ${item.quantity}
-      </div>
-
-      <div class="print-detail-remark">
-        ${
-          hasRemark
-            ? `📝 ${escapeHistoryDetailHtml(item.remark)}`
-            : ""
-        }
-      </div>
-    `;
-
+        ? `📝 ${escapeHistoryDetailHtml(item.remark)}`
+        : ""
+    }
+  </div>
+`;
     list.appendChild(
       row
     );
