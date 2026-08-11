@@ -96,7 +96,15 @@ async function loadHistoryOrders() {
     }
 
     historyOrders =
-      result.orders;
+  result.orders.filter(
+    function (order) {
+
+      return isWithinLastThreeMonths(
+        order.date
+      );
+
+    }
+  );
 
     buildHistoryChannelOptions();
 
@@ -357,6 +365,68 @@ function renderHistoryOrders(orders) {
       row
     );
   });
+}
+
+/**
+ * 判斷歷史資料是否在最近 3 個月內
+ */
+function isWithinLastThreeMonths(value) {
+
+  const parts =
+    String(value || "")
+      .trim()
+      .split(/[\/\-]/);
+
+  if (parts.length !== 3) {
+    return false;
+  }
+
+  const year = Number(parts[0]);
+  const month = Number(parts[1]);
+  const day = Number(parts[2]);
+
+  const orderDate =
+    new Date(
+      year,
+      month - 1,
+      day
+    );
+
+  if (
+    Number.isNaN(
+      orderDate.getTime()
+    )
+  ) {
+    return false;
+  }
+
+  const today = new Date();
+
+  today.setHours(
+    23,
+    59,
+    59,
+    999
+  );
+
+  const threeMonthsAgo =
+    new Date(
+      today.getFullYear(),
+      today.getMonth() - 3,
+      today.getDate()
+    );
+
+  threeMonthsAgo.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  return (
+    orderDate >= threeMonthsAgo &&
+    orderDate <= today
+  );
 }
 
 
