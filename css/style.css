@@ -1249,7 +1249,153 @@ select {
 }
 
 
+/* ==========================================
+   歷史資料頁
+   ========================================== */
 
+.history-filters {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.history-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-filter label {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.history-filter select {
+  min-height: 42px;
+  padding: 6px 10px;
+  border: 1px solid #cfd6df;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #ffffff;
+}
+
+
+/* 歷史資料總筆數 */
+#historySummary {
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+/* 每一張歷史抄貨單固定一列 */
+.history-order-row {
+  display: grid;
+
+  grid-template-columns:
+    140px
+    90px
+    140px
+    110px
+    80px;
+
+  align-items: center;
+
+  min-height: 54px;
+
+  padding: 8px 10px;
+
+  border-bottom: 1px solid #d8dee8;
+
+  box-sizing: border-box;
+
+  white-space: nowrap;
+}
+
+
+/* 日期 */
+.history-order-date {
+  font-weight: 700;
+}
+
+
+/* 通路 */
+.history-order-channel {
+  font-weight: 700;
+}
+
+
+/* 店家 */
+.history-order-branch {
+  font-weight: 700;
+}
+
+
+/* 商品數 */
+.history-order-count {
+  text-align: center;
+}
+
+
+/* 查看按鈕 */
+.history-view-button {
+  display: block;
+
+  padding: 8px 10px;
+
+  border-radius: 8px;
+
+  background: #2f6fdb;
+  color: #ffffff;
+
+  text-align: center;
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* 手機版 */
+@media (max-width: 767px) {
+
+  .history-filters {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .history-filter {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .history-filter label {
+    flex: 0 0 auto;
+  }
+
+  .history-filter select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #historyList {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .history-order-row {
+    width: 560px;
+
+    grid-template-columns:
+      125px
+      75px
+      125px
+      105px
+      80px;
+  }
+
+}
 
 
 
