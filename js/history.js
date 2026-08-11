@@ -46,7 +46,6 @@ function bindHistoryEvents() {
       updateHistoryBranchOptions();
 
       renderFilteredHistoryOrders();
-
     }
   );
 
@@ -67,8 +66,11 @@ async function loadHistoryOrders() {
       "historyList"
     );
 
-
-  list.innerHTML = "";
+  list.innerHTML = `
+    <div class="empty-history-message">
+      正在載入歷史資料...
+    </div>
+  `;
 
   try {
 
@@ -91,7 +93,6 @@ async function loadHistoryOrders() {
         result.message ||
         "讀取歷史資料失敗。"
       );
-
     }
 
     historyOrders =
@@ -110,11 +111,11 @@ async function loadHistoryOrders() {
       error
     );
 
-    
     list.innerHTML = `
-      <p class="empty-history-message">
+      <div class="empty-history-message">
+        讀取歷史資料失敗：
         ${escapeHistoryHtml(error.message)}
-      </p>
+      </div>
     `;
   }
 }
@@ -135,9 +136,11 @@ function buildHistoryChannelOptions() {
       new Set(
         historyOrders
           .map(function (order) {
+
             return String(
               order.channel || ""
             ).trim();
+
           })
           .filter(Boolean)
       )
@@ -165,7 +168,6 @@ function buildHistoryChannelOptions() {
     channelSelect.appendChild(
       option
     );
-
   });
 }
 
@@ -202,7 +204,6 @@ function updateHistoryBranchOptions() {
               order.channel ===
               selectedChannel
             );
-
           })
           .map(function (order) {
 
@@ -237,13 +238,55 @@ function updateHistoryBranchOptions() {
     branchSelect.appendChild(
       option
     );
-
   });
 }
 
 
 /**
  * 篩選並顯示歷史抄貨單
+ */
+function renderFilteredHistoryOrders() {
+
+  const channel =
+    document.getElementById(
+      "historyChannel"
+    ).value;
+
+  const branch =
+    document.getElementById(
+      "historyBranch"
+    ).value;
+
+  const filteredOrders =
+    historyOrders.filter(
+      function (order) {
+
+        if (
+          channel &&
+          order.channel !== channel
+        ) {
+          return false;
+        }
+
+        if (
+          branch &&
+          order.branch !== branch
+        ) {
+          return false;
+        }
+
+        return true;
+      }
+    );
+
+  renderHistoryOrders(
+    filteredOrders
+  );
+}
+
+
+/**
+ * 顯示歷史抄貨單
  */
 function renderHistoryOrders(orders) {
 
@@ -265,37 +308,6 @@ function renderHistoryOrders(orders) {
 
   list.innerHTML = "";
 
-
-/**
- * 顯示歷史抄貨單
- */
-function renderHistoryOrders(orders) {
-
-  const summary =
-    document.getElementById(
-      "historySummary"
-    );
-
-  const list =
-    document.getElementById(
-      "historyList"
-    );
-
-  if (orders.length === 0) {
-
-    summary.textContent =
-      "目前沒有符合的歷史資料。";
-
-    list.innerHTML = "";
-
-    return;
-  }
-
-  summary.textContent =
-    `共 ${orders.length} 張歷史抄貨單`;
-
-  list.innerHTML = "";
-
   orders.forEach(function (order) {
 
     const row =
@@ -314,9 +326,7 @@ function renderHistoryOrders(orders) {
     row.innerHTML = `
       <div class="history-order-date">
         ${escapeHistoryHtml(
-          formatHistoryDate(
-            order.date
-          )
+          formatHistoryDate(order.date)
         )}
       </div>
 
@@ -346,7 +356,6 @@ function renderHistoryOrders(orders) {
     list.appendChild(
       row
     );
-
   });
 }
 
