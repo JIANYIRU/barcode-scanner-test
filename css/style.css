@@ -1146,3 +1146,99 @@ grid-template-columns:
   cursor: pointer;
 }
 
+
+/* ==========================================
+   商品條碼搜尋
+   ========================================== */
+
+.product-search-box {
+  display: flex;
+  gap: 10px;
+}
+
+#searchKeyword {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  font-size: 16px;
+}
+
+#searchProductButton {
+  min-width: 90px;
+  min-height: 48px;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#searchSummary {
+  margin-bottom: 10px;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.search-product-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 10px 0;
+
+  border-bottom:
+    1px solid #d8dee8;
+}
+
+.search-product-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.search-product-barcode {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.search-product-name {
+  margin-top: 3px;
+
+  font-size: 14px;
+}
+
+.copy-barcode-button {
+  flex: 0 0 auto;
+
+  min-width: 88px;
+
+  padding: 8px 10px;
+
+  border: 0;
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
