@@ -130,12 +130,6 @@ const result =
 if (result.success) {
   currentDraftId = result.draftId;
 }
-
-/*
- * 商品加入列表後
- * 立即清空並隱藏新增商品區
- */
-clearProductPreview();
 }
 
 /**
@@ -158,12 +152,20 @@ function deleteOrderItem(index) {
 
   orderItems.splice(index, 1);
 
-  renderProductList();
+renderProductList();
+
 const result =
   saveCurrentOrder(currentDraftId);
 
 if (result.success) {
   currentDraftId = result.draftId;
+}
+
+/*
+ * 商品加入列表後
+ * 清空並隱藏商品新增區
+ */
+clearProductPreview();
 }
 }
 
