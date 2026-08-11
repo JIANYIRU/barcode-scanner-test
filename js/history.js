@@ -62,18 +62,11 @@ function bindHistoryEvents() {
  */
 async function loadHistoryOrders() {
 
-  const summary =
-    document.getElementById(
-      "historySummary"
-    );
-
   const list =
     document.getElementById(
       "historyList"
     );
 
-  summary.textContent =
-    "正在載入歷史資料...";
 
   list.innerHTML = "";
 
@@ -117,9 +110,7 @@ async function loadHistoryOrders() {
       error
     );
 
-    summary.textContent =
-      "讀取歷史資料失敗。";
-
+    
     list.innerHTML = `
       <p class="empty-history-message">
         ${escapeHistoryHtml(error.message)}
@@ -254,44 +245,25 @@ function updateHistoryBranchOptions() {
 /**
  * 篩選並顯示歷史抄貨單
  */
-function renderFilteredHistoryOrders() {
+function renderHistoryOrders(orders) {
 
-  const channel =
+  const list =
     document.getElementById(
-      "historyChannel"
-    ).value;
-
-  const branch =
-    document.getElementById(
-      "historyBranch"
-    ).value;
-
-  const filteredOrders =
-    historyOrders.filter(
-      function (order) {
-
-        if (
-          channel &&
-          order.channel !== channel
-        ) {
-          return false;
-        }
-
-        if (
-          branch &&
-          order.branch !== branch
-        ) {
-          return false;
-        }
-
-        return true;
-      }
+      "historyList"
     );
 
-  renderHistoryOrders(
-    filteredOrders
-  );
-}
+  if (orders.length === 0) {
+
+    list.innerHTML = `
+      <div class="empty-history-message">
+        目前沒有符合的歷史資料
+      </div>
+    `;
+
+    return;
+  }
+
+  list.innerHTML = "";
 
 
 /**
