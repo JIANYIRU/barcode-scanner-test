@@ -122,15 +122,16 @@ function editOrderItem(index) {
   item.remark =
     newRemark.trim();
 
-renderProductList();
+  renderProductList();
 
-const result =
-  saveCurrentOrder(currentDraftId);
+  const result =
+    saveCurrentOrder(currentDraftId);
 
-if (result.success) {
-  currentDraftId = result.draftId;
+  if (result.success) {
+    currentDraftId = result.draftId;
+  }
 }
-}
+
 
 /**
  * 刪除整筆商品
@@ -152,13 +153,14 @@ function deleteOrderItem(index) {
 
   orderItems.splice(index, 1);
 
-renderProductList();
+  renderProductList();
 
-const result =
-  saveCurrentOrder(currentDraftId);
+  const result =
+    saveCurrentOrder(currentDraftId);
 
-if (result.success) {
-  currentDraftId = result.draftId;
+  if (result.success) {
+    currentDraftId = result.draftId;
+  }
 }
 
 /*
