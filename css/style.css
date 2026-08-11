@@ -1397,7 +1397,57 @@ select {
 
 }
 
+/* ==========================================
+   歷史抄貨明細
+   四欄固定對齊
+   ========================================== */
 
+.print-detail-table-header,
+.print-detail-row {
+  display: grid;
+  grid-template-columns:
+    20% 40% 10% 30%;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-detail-table-header {
+  padding: 16px 12px;
+  font-weight: 700;
+  border-bottom: 1px solid #9aa7b8;
+}
+
+.print-detail-row {
+  padding: 18px 12px;
+  border-bottom: 1px solid #d9e0e8;
+}
+
+.print-detail-barcode,
+.print-detail-name,
+.print-detail-quantity,
+.print-detail-remark {
+  min-width: 0;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+.print-detail-barcode {
+  font-weight: 700;
+}
+
+.print-detail-name {
+  font-weight: 700;
+}
+
+.print-detail-quantity {
+  font-weight: 700;
+  text-align: center;
+}
+
+.print-detail-remark {
+  word-break: break-word;
+}
 
 
 
