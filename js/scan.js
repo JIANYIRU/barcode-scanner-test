@@ -94,10 +94,11 @@ document
     .addEventListener("click", closeCamera);
 
   document
-    .getElementById("manualButton")
-    .addEventListener("click", function () {
-      alert("手動輸入條碼功能稍後開發");
-    });
+  .getElementById("manualButton")
+  .addEventListener(
+    "click",
+    handleManualBarcode
+  );
 
   document
   .getElementById("saveButton")
@@ -112,6 +113,80 @@ document
     "click",
     handleCompleteOrder
   );
+}
+
+
+/**
+ * 手動輸入商品條碼
+ */
+async function handleManualBarcode() {
+
+  const input =
+    window.prompt(
+      "請輸入商品條碼"
+    );
+
+  // 按取消
+  if (input === null) {
+    return;
+  }
+
+  const barcode =
+    String(input).trim();
+
+  if (!barcode) {
+    alert("請輸入商品條碼。");
+    return;
+  }
+
+  try {
+
+    const result =
+      await api(
+        "findProduct",
+        {
+          barcode: barcode
+        }
+      );
+
+    console.log(
+      "手動條碼查詢結果：",
+      result
+    );
+
+    if (
+      !result.success ||
+      !result.product
+    ) {
+
+      currentProduct = null;
+
+      alert(
+        result.message ||
+        `查無商品：${barcode}`
+      );
+
+      return;
+    }
+
+    currentProduct =
+      result.product;
+
+    showProductPreview(
+      currentProduct
+    );
+
+  } catch (error) {
+
+    console.error(
+      "手動條碼查詢失敗：",
+      error
+    );
+
+    alert(
+      `商品查詢失敗：${error.message}`
+    );
+  }
 }
 
 
