@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1"
+  >
+
+  <title>歷史資料</title>
+
+  <link
+    rel="stylesheet"
+    href="css/style.css?v=31"
+  >
+</head>
+
+<body>
+
+  <main class="page">
+
+    <section class="system-card">
+
+      <h1>歷史資料</h1>
+
+      <div class="divider"></div>
+
+
+      <!-- 查詢條件 -->
+      <div class="history-filters">
+
+        <div class="history-filter">
+
+          <label for="historyChannel">
+            通路
+          </label>
+
+          <select id="historyChannel">
+            <option value="">
+              全部通路
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="history-filter">
+
+          <label for="historyBranch">
+            店家
+          </label>
+
+          <select id="historyBranch">
+            <option value="">
+              全部店家
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="divider"></div>
+
+
+      <div id="historySummary">
+        正在載入歷史資料...
+      </div>
+
+
+      <!--
+        每一筆之後會顯示成：
+
+        2026-08-11
+        小點
+        中華店
+        1 項商品
+        查看
+
+        但版面全部固定在同一列
+      -->
+      <div id="historyList"></div>
+
+
+      <div class="divider"></div>
+
+
+      <a
+        class="dashboard-button"
+        href="index.html">
+        返回首頁
+      </a>
+
+    </section>
+
+  </main>
+
+
+  <script src="js/api.js?v=41"></script>
+  <script src="js/history.js?v=1"></script>
+
+</body>
+
+</html>
