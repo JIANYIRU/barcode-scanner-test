@@ -212,7 +212,9 @@ function showProductPreview(product) {
 document.getElementById("quantityInput").value = 1;
 document.getElementById("remarkInput").value = "";
   
-  productPreview.hidden = false;
+ productPreview.hidden = false;
+productPreview.style.display = "block";
+  
 }
 
 function handleSaveOrder() {
