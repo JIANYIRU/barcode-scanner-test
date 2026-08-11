@@ -129,10 +129,13 @@ const result =
 
 if (result.success) {
   currentDraftId = result.draftId;
-
-  // 加入成功後清空並隱藏商品辨識區
-  clearProductPreview();
 }
+
+/*
+ * 商品加入列表後
+ * 立即清空並隱藏新增商品區
+ */
+clearProductPreview();
 }
 
 /**
