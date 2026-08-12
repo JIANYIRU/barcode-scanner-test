@@ -34,6 +34,51 @@
   </button>
 </div>
 
+<!-- 手動輸入條碼／商品搜尋區 -->
+<div
+  id="manualSearchArea"
+  class="manual-search-area"
+  hidden>
+
+  <div class="manual-search-bar">
+
+    <input
+      id="manualSearchKeyword"
+      type="text"
+      placeholder="輸入商品名稱或條碼，例如：220 毛巾"
+    >
+
+    <button
+      id="manualSearchSubmitButton"
+      type="button">
+      搜尋
+    </button>
+
+  </div>
+
+  <!-- 搜尋結果會由 JavaScript 放進這裡 -->
+  <div
+    id="manualSearchResult"
+    class="manual-search-result">
+  </div>
+
+  <!-- 有勾選商品時才顯示 -->
+  <button
+    id="addManualSelectedButton"
+    class="primary-button"
+    type="button"
+    hidden>
+    加入商品列表
+  </button>
+
+  <button
+    id="closeManualSearchButton"
+    type="button">
+    關閉
+  </button>
+
+</div>    
+
 <div id="cameraArea" class="camera-area" hidden>
   <div id="reader"></div>
   <div id="zoomControls" class="zoom-controls" hidden>
