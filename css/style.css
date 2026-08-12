@@ -1556,3 +1556,127 @@ select {
   background: white;
   color: #10264b;
 }
+
+
+/* ==========================================
+   手動搜尋商品結果
+   ========================================== */
+
+.manual-search-result {
+  margin-top: 16px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* 每一項商品固定同一橫列 */
+.manual-product-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  min-width: max-content;
+  min-height: 54px;
+
+  padding: 8px 10px;
+
+  border-bottom: 1px solid #d8e0eb;
+
+  box-sizing: border-box;
+}
+
+/* 勾選框＋條碼＋商品名稱 */
+.manual-product-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  flex: 0 0 auto;
+
+  cursor: pointer;
+}
+
+.manual-product-checkbox {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+
+  flex: 0 0 auto;
+}
+
+.manual-product-barcode {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.manual-product-name {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* 勾選後出現的編輯區 */
+.manual-product-edit {
+  align-items: center;
+  gap: 8px;
+
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/*
+ * hidden 時完全消失
+ */
+.manual-product-edit[hidden] {
+  display: none;
+}
+
+/*
+ * 有勾選時 JS 會移除 hidden，
+ * 這時改成橫向排列
+ */
+.manual-product-edit:not([hidden]) {
+  display: flex;
+}
+
+.manual-quantity-label,
+.manual-remark-label {
+  font-weight: 700;
+}
+
+/* 數量 +/- */
+.manual-minus-button,
+.manual-plus-button {
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+/* 數量輸入 */
+.manual-quantity-input {
+  width: 64px;
+  height: 42px;
+
+  padding: 0 8px;
+
+  text-align: center;
+  font-size: 16px;
+
+  box-sizing: border-box;
+}
+
+/* 備註 */
+.manual-remark-input {
+  width: 180px;
+  height: 42px;
+
+  padding: 0 10px;
+
+  font-size: 16px;
+
+  box-sizing: border-box;
+}
