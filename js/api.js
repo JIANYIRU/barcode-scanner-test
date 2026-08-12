@@ -1,8 +1,7 @@
-console.log("api.js v19 已載入");
+console.log("api.js v20 已載入");
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbxJnlep7SjJS3HlnYUpv11KwNVWIZCjBpng1PXn0HNz549XoiypUGFyhnMSzDpLrnMl_Q/exec";
-
+  "https://script.google.com/macros/s/AKfycbwvX4Gn4DKH50gNbxujNqmJUnEVdqapSCi6pD984IeztiJQbtImKtCNKd7jPlmG9IXYRw/exec";
 
 /**
  * 等待指定毫秒
