@@ -93,12 +93,19 @@ document
     .getElementById("closeCameraButton")
     .addEventListener("click", closeCamera);
 
-  document
-  .getElementById("manualButton")
-  .addEventListener(
-    "click",
-    handleManualBarcode
-  );
+document
+.getElementById("manualButton")
+.addEventListener(
+  "click",
+  openManualSearch
+);
+
+document
+.getElementById("closeManualSearchButton")
+.addEventListener(
+  "click",
+  closeManualSearch
+);
 
   document
   .getElementById("saveButton")
@@ -117,78 +124,85 @@ document
 
 
 /**
- * 手動輸入商品條碼
+ * 開啟手動輸入條碼搜尋區
  */
-async function handleManualBarcode() {
+function openManualSearch() {
 
-  const input =
-    window.prompt(
-      "請輸入商品條碼"
+  const manualSearchArea =
+    document.getElementById(
+      "manualSearchArea"
     );
 
-  // 按取消
-  if (input === null) {
-    return;
-  }
-
-  const barcode =
-    String(input).trim();
-
-  if (!barcode) {
-    alert("請輸入商品條碼。");
-    return;
-  }
-
-  try {
-
-    const result =
-      await api(
-        "findProduct",
-        {
-          barcode: barcode
-        }
-      );
-
-    console.log(
-      "手動條碼查詢結果：",
-      result
+  const manualSearchKeyword =
+    document.getElementById(
+      "manualSearchKeyword"
     );
 
-    if (
-      !result.success ||
-      !result.product
-    ) {
+  /*
+   * 開啟手動搜尋時，
+   * 如果相機目前開著就先關閉。
+   */
+  closeCamera();
 
-      currentProduct = null;
+  manualSearchArea.hidden = false;
+  manualSearchArea.style.display = "block";
 
-      alert(
-        result.message ||
-        `查無商品：${barcode}`
-      );
+  /*
+   * 每次重新開啟時
+   * 先把搜尋框清空。
+   */
+  manualSearchKeyword.value = "";
 
-      return;
-    }
+  document
+    .getElementById(
+      "manualSearchResult"
+    )
+    .innerHTML = "";
 
-    currentProduct =
-      result.product;
+  document
+    .getElementById(
+      "addManualSelectedButton"
+    )
+    .hidden = true;
 
-    showProductPreview(
-      currentProduct
-    );
-
-  } catch (error) {
-
-    console.error(
-      "手動條碼查詢失敗：",
-      error
-    );
-
-    alert(
-      `商品查詢失敗：${error.message}`
-    );
-  }
+  /*
+   * 游標直接進入搜尋框
+   */
+  manualSearchKeyword.focus();
 }
 
+
+/**
+ * 關閉手動輸入條碼搜尋區
+ */
+function closeManualSearch() {
+
+  const manualSearchArea =
+    document.getElementById(
+      "manualSearchArea"
+    );
+
+  manualSearchArea.hidden = true;
+  manualSearchArea.style.display = "none";
+
+  document
+    .getElementById(
+      "manualSearchKeyword"
+    )
+    .value = "";
+
+  document
+    .getElementById(
+      "manualSearchResult"
+    )
+    .innerHTML = "";
+
+  document
+    .getElementById(
+      "addManualSelectedButton"
+    )
+    .hidden = true;
+}
 
 /**
  * 顯示商品辨識結果
