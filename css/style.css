@@ -1487,6 +1487,18 @@ select {
   background: #fff6c9;
 }
 
+/* 抄貨打單－查看按鈕置中 */
 
+.print-view-button,
+.history-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  line-height: 1;
+
+  box-sizing: border-box;
+}
 
 
