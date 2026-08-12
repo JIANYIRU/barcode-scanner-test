@@ -104,6 +104,10 @@ async function api(
       `GET API ${action}：第 ${attempt}/${maxAttempts} 次嘗試`
     );
 
+    console.log(
+  "實際 GET 網址：",
+  requestUrl
+);
 
     try {
 
