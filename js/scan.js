@@ -108,6 +108,27 @@ document
 );
 
   document
+.getElementById("manualSearchSubmitButton")
+.addEventListener(
+  "click",
+  searchManualProducts
+);
+
+  document
+.getElementById("manualSearchKeyword")
+.addEventListener(
+  "keydown",
+  function (event) {
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      searchManualProducts();
+    }
+
+  }
+);
+
+  document
   .getElementById("saveButton")
   .addEventListener(
     "click",
