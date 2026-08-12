@@ -128,6 +128,14 @@ document
   }
 );
 
+document
+.getElementById("addManualSelectedButton")
+.addEventListener(
+  "click",
+  addManualSelectedProducts
+);
+
+  
   document
   .getElementById("saveButton")
   .addEventListener(
@@ -572,6 +580,129 @@ function updateManualAddButton() {
 
 
 /**
+ * 將手動搜尋中勾選的商品
+ * 一次加入抄貨列表
+ */
+function addManualSelectedProducts() {
+
+  const checkedBoxes =
+    document.querySelectorAll(
+      ".manual-product-checkbox:checked"
+    );
+
+  if (checkedBoxes.length === 0) {
+    alert("請至少勾選一項商品。");
+    return;
+  }
+
+  checkedBoxes.forEach(function (checkbox) {
+
+    const index =
+      checkbox.dataset.index;
+
+    const row =
+      checkbox.closest(
+        ".manual-product-row"
+      );
+
+    if (!row) {
+      return;
+    }
+
+    const barcode =
+      row.dataset.barcode || "";
+
+    const name =
+      row.dataset.name || "";
+
+    const quantityInput =
+      document.querySelector(
+        `.manual-quantity-input[data-index="${index}"]`
+      );
+
+    const remarkInput =
+      document.querySelector(
+        `.manual-remark-input[data-index="${index}"]`
+      );
+
+    const quantity =
+      getValidQuantity(
+        quantityInput
+          ? quantityInput.value
+          : 1
+      );
+
+    const remark =
+      remarkInput
+        ? remarkInput.value.trim()
+        : "";
+
+    /*
+     * 已存在的商品：
+     * 不新增第二筆，直接累加數量
+     */
+    const existingItem =
+      orderItems.find(function (item) {
+
+        return (
+          String(item.barcode) ===
+          String(barcode)
+        );
+
+      });
+
+    if (existingItem) {
+
+      existingItem.quantity +=
+        quantity;
+
+      if (remark) {
+        existingItem.remark =
+          remark;
+      }
+
+    } else {
+
+      orderItems.push({
+        barcode: barcode,
+        name: name,
+        quantity: quantity,
+        remark: remark
+      });
+
+    }
+
+  });
+
+
+  /*
+   * 更新商品列表
+   */
+  renderProductList();
+
+
+  /*
+   * 自動暫存目前抄貨單
+   */
+  const result =
+    saveCurrentOrder(
+      currentDraftId
+    );
+
+  if (result.success) {
+    currentDraftId =
+      result.draftId;
+  }
+
+
+  /*
+   * 加入成功後，
+   * 關閉並清空手動搜尋區
+   */
+  closeManualSearch();
+}
+
+/**
  * 顯示商品辨識結果
  */
 function showProductPreview(product) {
@@ -621,6 +752,8 @@ function handleSaveOrder() {
 
   window.location.href = "index.html";
 }
+
+
 
 /**
  * ==========================================
