@@ -317,7 +317,7 @@ function renderManualSearchResults(products) {
 
   resultArea.innerHTML = "";
 
-  products.forEach(function (product) {
+  products.forEach(function (product, index) {
 
     const row =
       document.createElement("div");
@@ -326,18 +326,141 @@ function renderManualSearchResults(products) {
       "manual-product-row";
 
     row.innerHTML = `
-      <span class="manual-product-barcode">
-        ${escapeHtml(product.barcode)}
-      </span>
+      <label class="manual-product-main">
 
-      <span class="manual-product-name">
-        ${escapeHtml(product.name)}
-      </span>
+        <input
+          class="manual-product-checkbox"
+          type="checkbox"
+          data-index="${index}"
+        >
+
+        <span class="manual-product-barcode">
+          ${escapeHtml(product.barcode)}
+        </span>
+
+        <span class="manual-product-name">
+          ${escapeHtml(product.name)}
+        </span>
+
+      </label>
+
+      <div
+        class="manual-product-edit"
+        data-index="${index}"
+        hidden>
+
+        <span class="manual-quantity-label">
+          數量
+        </span>
+
+        <button
+          class="manual-minus-button"
+          type="button"
+          data-index="${index}">
+          −
+        </button>
+
+        <input
+          class="manual-quantity-input"
+          type="number"
+          min="1"
+          value="1"
+          data-index="${index}"
+        >
+
+        <button
+          class="manual-plus-button"
+          type="button"
+          data-index="${index}">
+          ＋
+        </button>
+
+        <span class="manual-remark-label">
+          備註
+        </span>
+
+        <input
+          class="manual-remark-input"
+          type="text"
+          placeholder="可略過"
+          data-index="${index}"
+        >
+
+      </div>
     `;
+
+    /*
+     * 暫存這筆商品資料，
+     * 之後加入抄貨列表時會使用。
+     */
+    row.dataset.barcode =
+      product.barcode || "";
+
+    row.dataset.name =
+      product.name || "";
 
     resultArea.appendChild(row);
 
   });
+
+  bindManualSearchResultEvents();
+}
+
+/**
+ * 綁定手動搜尋結果事件
+ */
+function bindManualSearchResultEvents() {
+
+  document
+    .querySelectorAll(
+      ".manual-product-checkbox"
+    )
+    .forEach(function (checkbox) {
+
+      checkbox.addEventListener(
+        "change",
+        function () {
+
+          const index =
+            checkbox.dataset.index;
+
+          const editArea =
+            document.querySelector(
+              `.manual-product-edit[data-index="${index}"]`
+            );
+
+          if (!editArea) {
+            return;
+          }
+
+          editArea.hidden =
+            !checkbox.checked;
+
+          updateManualAddButton();
+        }
+      );
+
+    });
+}
+
+
+/**
+ * 控制「加入商品列表」按鈕
+ */
+function updateManualAddButton() {
+
+  const hasSelected =
+    document.querySelector(
+      ".manual-product-checkbox:checked"
+    );
+
+  const button =
+    document.getElementById(
+      "addManualSelectedButton"
+    );
+
+  button.hidden =
+    !hasSelected;
 }
 
 
