@@ -225,6 +225,122 @@ function closeManualSearch() {
     .hidden = true;
 }
 
+
+/**
+ * 手動輸入條碼－搜尋商品
+ */
+async function searchManualProducts() {
+
+  const keywordInput =
+    document.getElementById(
+      "manualSearchKeyword"
+    );
+
+  const resultArea =
+    document.getElementById(
+      "manualSearchResult"
+    );
+
+  const keyword =
+    String(keywordInput.value || "")
+      .trim();
+
+  if (!keyword) {
+    alert("請輸入商品名稱或條碼。");
+    keywordInput.focus();
+    return;
+  }
+
+  resultArea.innerHTML =
+    "<p>搜尋中...</p>";
+
+  try {
+
+    const result =
+      await api(
+        "searchProducts",
+        {
+          keyword: keyword
+        }
+      );
+
+    console.log(
+      "手動商品搜尋結果：",
+      result
+    );
+
+    if (
+      !result.success ||
+      !Array.isArray(result.products)
+    ) {
+      throw new Error(
+        result.message ||
+        "商品搜尋失敗。"
+      );
+    }
+
+    if (result.products.length === 0) {
+
+      resultArea.innerHTML =
+        "<p>查無符合的商品。</p>";
+
+      return;
+    }
+
+    renderManualSearchResults(
+      result.products
+    );
+
+  } catch (error) {
+
+    console.error(
+      "手動商品搜尋失敗：",
+      error
+    );
+
+    resultArea.innerHTML =
+      `<p>商品搜尋失敗：${escapeHtml(error.message)}</p>`;
+
+  }
+}
+
+
+/**
+ * 顯示手動商品搜尋結果
+ */
+function renderManualSearchResults(products) {
+
+  const resultArea =
+    document.getElementById(
+      "manualSearchResult"
+    );
+
+  resultArea.innerHTML = "";
+
+  products.forEach(function (product) {
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "manual-product-row";
+
+    row.innerHTML = `
+      <span class="manual-product-barcode">
+        ${escapeHtml(product.barcode)}
+      </span>
+
+      <span class="manual-product-name">
+        ${escapeHtml(product.name)}
+      </span>
+    `;
+
+    resultArea.appendChild(row);
+
+  });
+}
+
+
 /**
  * 顯示商品辨識結果
  */
