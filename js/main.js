@@ -1,34 +1,124 @@
-console.log("main.js v10 已載入");
+console.log("main.js v11 已載入");
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
 
 
 /**
  * ==========================================
- * localStorage 快取設定
+ * 通路／店家固定資料
  * ==========================================
  */
 
-const CHANNEL_CACHE_KEY =
-  "SMART_STOCK_CHANNELS_V1";
+const CHANNEL_DATA = [
 
-const BRANCH_CACHE_PREFIX =
-  "SMART_STOCK_BRANCHES_V1_";
+  {
+    code: "XD",
+    name: "小點",
+    branches: [
+      { code: "XD001", name: "家新" },
+      { code: "XD002", name: "利佳" },
+      { code: "XD003", name: "京富" },
+      { code: "XD004", name: "鉦鑫" },
+      { code: "XD005", name: "安東" },
+      { code: "XD006", name: "安和" },
+      { code: "XD007", name: "吉利" }
+    ]
+  },
 
-const CACHE_EXPIRE_MS =
-  24 * 60 * 60 * 1000;
+  {
+    code: "NH",
+    name: "農會",
+    branches: [
+      { code: "NH001", name: "太平" },
+      { code: "NH002", name: "卑南" },
+      { code: "NH003", name: "縣農" },
+      { code: "NH004", name: "中正" },
+      { code: "NH005", name: "新園" },
+      { code: "NH006", name: "中華" },
+      { code: "NH007", name: "豐里" },
+      { code: "NH008", name: "知本" },
+      { code: "NH009", name: "初鹿" }
+    ]
+  },
+
+  {
+    code: "ZY",
+    name: "正一",
+    branches: [
+      { code: "ZY001", name: "中華店" },
+      { code: "ZY002", name: "卑南店" },
+      { code: "ZY003", name: "園藝店" },
+      { code: "ZY004", name: "更生店" },
+      { code: "ZY005", name: "豐榮店" },
+      { code: "ZY006", name: "新生店" }
+    ]
+  },
+
+  {
+    code: "LI",
+    name: "鹿野",
+    branches: [
+      { code: "LI001", name: "金昇利" },
+      { code: "LI002", name: "瑞源" },
+      { code: "LI003", name: "延平" }
+    ]
+  },
+
+  {
+    code: "GS",
+    name: "關山",
+    branches: [
+      { code: "GS001", name: "政利" },
+      { code: "GS002", name: "關農" },
+      { code: "GS003", name: "正一關山" }
+    ]
+  },
+
+  {
+    code: "CS",
+    name: "池上",
+    branches: [
+      { code: "CS001", name: "池農" },
+      { code: "CS002", name: "正一池上" },
+      { code: "CS003", name: "正一玉里" }
+    ]
+  },
+
+  {
+    code: "CG",
+    name: "成功",
+    branches: [
+      { code: "CG001", name: "成農" },
+      { code: "CG002", name: "正一成功" },
+      { code: "CG003", name: "漁會" },
+      { code: "CG004", name: "豐展" }
+    ]
+  },
+
+  {
+    code: "ON",
+    name: "169",
+    branches: [
+      { code: "ON001", name: "169" }
+    ]
+  }
+
+];
 
 
 /**
  * 系統初始化
  */
-async function init() {
+function init() {
 
   setToday();
 
   bindEvents();
 
-  await loadChannels();
+  loadChannels();
 
 }
 
@@ -74,6 +164,7 @@ function bindEvents() {
       "startButton"
     );
 
+
   channelSelect.addEventListener(
     "change",
     function () {
@@ -85,217 +176,22 @@ function bindEvents() {
     }
   );
 
+
   startButton.addEventListener(
     "click",
     startScan
   );
+
 }
 
 
 /**
  * ==========================================
- * localStorage 工具
- * ==========================================
- */
-
-
-/**
- * 寫入快取
- */
-function setLocalCache(
-  key,
-  data
-) {
-
-  try {
-
-    const payload = {
-      savedAt: Date.now(),
-      data: data
-    };
-
-    localStorage.setItem(
-      key,
-      JSON.stringify(payload)
-    );
-
-  } catch (error) {
-
-    console.warn(
-      "localStorage 寫入失敗：",
-      key,
-      error
-    );
-
-  }
-}
-
-
-/**
- * 讀取快取
- */
-function getLocalCache(key) {
-
-  try {
-
-    const raw =
-      localStorage.getItem(key);
-
-    if (!raw) {
-      return null;
-    }
-
-    const payload =
-      JSON.parse(raw);
-
-    if (
-      !payload ||
-      !Array.isArray(payload.data)
-    ) {
-      return null;
-    }
-
-    const age =
-      Date.now() -
-      Number(payload.savedAt || 0);
-
-    if (
-      age >
-      CACHE_EXPIRE_MS
-    ) {
-
-      localStorage.removeItem(
-        key
-      );
-
-      return null;
-
-    }
-
-    return payload.data;
-
-  } catch (error) {
-
-    console.warn(
-      "localStorage 讀取失敗：",
-      key,
-      error
-    );
-
-    return null;
-
-  }
-}
-
-
-/**
- * ==========================================
- * 通路
- * ==========================================
- */
-
-
-/**
  * 載入通路
+ * ==========================================
  */
-async function loadChannels() {
 
-  const channelSelect =
-    document.getElementById(
-      "channel"
-    );
-
-  /*
-   * 先看 localStorage
-   */
-  const cachedChannels =
-    getLocalCache(
-      CHANNEL_CACHE_KEY
-    );
-
-  if (
-    Array.isArray(cachedChannels) &&
-    cachedChannels.length > 0
-  ) {
-
-    console.log(
-      "使用本機通路快取：",
-      cachedChannels
-    );
-
-    renderChannels(
-      cachedChannels
-    );
-
-    return;
-  }
-
-
-  /*
-   * 本機沒有資料才呼叫 API
-   */
-  channelSelect.innerHTML =
-    '<option value="">正在載入通路...</option>';
-
-
-  try {
-
-    const result =
-      await api(
-        "getChannels"
-      );
-
-    console.log(
-      "通路載入結果：",
-      result
-    );
-
-    if (
-      !result.success ||
-      !Array.isArray(
-        result.channels
-      )
-    ) {
-
-      throw new Error(
-        result.message ||
-        "通路資料格式錯誤"
-      );
-
-    }
-
-    /*
-     * 存進 localStorage
-     */
-    setLocalCache(
-      CHANNEL_CACHE_KEY,
-      result.channels
-    );
-
-    renderChannels(
-      result.channels
-    );
-
-  } catch (error) {
-
-    console.error(
-      "通路載入失敗：",
-      error
-    );
-
-    channelSelect.innerHTML =
-      '<option value="">通路載入失敗</option>';
-
-  }
-}
-
-
-/**
- * 顯示通路
- */
-async function renderChannels(
-  channels
-) {
+function loadChannels() {
 
   const channelSelect =
     document.getElementById(
@@ -304,7 +200,8 @@ async function renderChannels(
 
   channelSelect.innerHTML = "";
 
-  channels.forEach(
+
+  CHANNEL_DATA.forEach(
     function (channel) {
 
       const option =
@@ -329,168 +226,31 @@ async function renderChannels(
   /*
    * 預設第一個通路
    */
-  if (channels.length > 0) {
+  if (CHANNEL_DATA.length > 0) {
 
     const firstChannelCode =
-      channels[0].code;
+      CHANNEL_DATA[0].code;
 
     channelSelect.value =
       firstChannelCode;
 
-    console.log(
-      "準備載入店家，通路代號：",
-      firstChannelCode
-    );
-
-    await loadBranches(
+    loadBranches(
       firstChannelCode
     );
 
   }
+
 }
 
 
 /**
  * ==========================================
- * 店家
- * ==========================================
- */
-
-
-/**
  * 依通路載入店家
+ * ==========================================
  */
-async function loadBranches(
+
+function loadBranches(
   channelCode
-) {
-
-  const branchSelect =
-    document.getElementById(
-      "branch"
-    );
-
-  console.log(
-    "loadBranches 收到：",
-    channelCode
-  );
-
-
-  if (!channelCode) {
-
-    branchSelect.innerHTML =
-      '<option value="">請先選擇通路</option>';
-
-    return;
-
-  }
-
-
-  const branchCacheKey =
-    BRANCH_CACHE_PREFIX +
-    channelCode;
-
-
-  /*
-   * 先看 localStorage
-   */
-  const cachedBranches =
-    getLocalCache(
-      branchCacheKey
-    );
-
-
-  if (
-    Array.isArray(cachedBranches)
-  ) {
-
-    console.log(
-      `使用本機店家快取：${channelCode}`,
-      cachedBranches
-    );
-
-    renderBranches(
-      cachedBranches
-    );
-
-    return;
-
-  }
-
-
-  /*
-   * 沒有本機快取才呼叫 API
-   */
-  branchSelect.innerHTML =
-    '<option value="">正在載入店家...</option>';
-
-
-  try {
-
-    const result =
-      await api(
-        "getBranches",
-        {
-          channelCode:
-            channelCode
-        }
-      );
-
-
-    console.log(
-      "店家載入結果：",
-      result
-    );
-
-
-    if (
-      !result.success ||
-      !Array.isArray(
-        result.branches
-      )
-    ) {
-
-      throw new Error(
-        result.message ||
-        "店家資料格式錯誤"
-      );
-
-    }
-
-
-    /*
-     * 存進 localStorage
-     */
-    setLocalCache(
-      branchCacheKey,
-      result.branches
-    );
-
-
-    renderBranches(
-      result.branches
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "店家載入失敗：",
-      error
-    );
-
-
-    branchSelect.innerHTML =
-      '<option value="">店家載入失敗</option>';
-
-  }
-}
-
-
-/**
- * 顯示店家
- */
-function renderBranches(
-  branches
 ) {
 
   const branchSelect =
@@ -501,7 +261,35 @@ function renderBranches(
   branchSelect.innerHTML = "";
 
 
-  if (branches.length === 0) {
+  const channel =
+    CHANNEL_DATA.find(
+      function (item) {
+
+        return (
+          item.code ===
+          channelCode
+        );
+
+      }
+    );
+
+
+  if (!channel) {
+
+    branchSelect.innerHTML =
+      '<option value="">找不到店家</option>';
+
+    return;
+
+  }
+
+
+  if (
+    !Array.isArray(
+      channel.branches
+    ) ||
+    channel.branches.length === 0
+  ) {
 
     branchSelect.innerHTML =
       '<option value="">目前沒有店家</option>';
@@ -511,7 +299,7 @@ function renderBranches(
   }
 
 
-  branches.forEach(
+  channel.branches.forEach(
     function (branch) {
 
       const option =
@@ -531,6 +319,7 @@ function renderBranches(
 
     }
   );
+
 }
 
 
@@ -556,6 +345,20 @@ function startScan() {
     document.getElementById(
       "orderDate"
     ).value;
+
+
+  if (
+    channelSelect.selectedIndex < 0 ||
+    branchSelect.selectedIndex < 0
+  ) {
+
+    alert(
+      "請選擇通路與店家。"
+    );
+
+    return;
+
+  }
 
 
   const channelName =
