@@ -1487,10 +1487,11 @@ select {
   background: #fff6c9;
 }
 
-/* 抄貨打單－查看按鈕置中 */
+/* ==========================================
+   抄貨打單－查看按鈕文字置中
+   ========================================== */
 
-.print-view-button,
-.history-view-button {
+.view-print-order-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1500,5 +1501,4 @@ select {
 
   box-sizing: border-box;
 }
-
 
