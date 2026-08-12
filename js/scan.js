@@ -411,6 +411,9 @@ function renderManualSearchResults(products) {
  */
 function bindManualSearchResultEvents() {
 
+  // ==========================================
+  // 勾選商品
+  // ==========================================
   document
     .querySelectorAll(
       ".manual-product-checkbox"
@@ -441,6 +444,110 @@ function bindManualSearchResultEvents() {
       );
 
     });
+
+
+  // ==========================================
+  // 數量減 1
+  // ==========================================
+  document
+    .querySelectorAll(
+      ".manual-minus-button"
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          const index =
+            button.dataset.index;
+
+          const input =
+            document.querySelector(
+              `.manual-quantity-input[data-index="${index}"]`
+            );
+
+          if (!input) {
+            return;
+          }
+
+          const quantity =
+            getValidQuantity(
+              input.value
+            );
+
+          input.value =
+            Math.max(
+              1,
+              quantity - 1
+            );
+        }
+      );
+
+    });
+
+
+  // ==========================================
+  // 數量加 1
+  // ==========================================
+  document
+    .querySelectorAll(
+      ".manual-plus-button"
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          const index =
+            button.dataset.index;
+
+          const input =
+            document.querySelector(
+              `.manual-quantity-input[data-index="${index}"]`
+            );
+
+          if (!input) {
+            return;
+          }
+
+          const quantity =
+            getValidQuantity(
+              input.value
+            );
+
+          input.value =
+            quantity + 1;
+        }
+      );
+
+    });
+
+
+  // ==========================================
+  // 直接輸入數量
+  // ==========================================
+  document
+    .querySelectorAll(
+      ".manual-quantity-input"
+    )
+    .forEach(function (input) {
+
+      input.addEventListener(
+        "change",
+        function () {
+
+          input.value =
+            getValidQuantity(
+              input.value
+            );
+
+        }
+      );
+
+    });
+
 }
 
 
