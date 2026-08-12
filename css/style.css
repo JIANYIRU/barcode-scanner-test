@@ -1502,3 +1502,57 @@ select {
   box-sizing: border-box;
 }
 
+/* ==========================================
+   手動輸入條碼搜尋區
+   ========================================== */
+
+.manual-search-area {
+  margin-top: 16px;
+}
+
+.manual-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+#manualSearchKeyword {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+
+  font-size: 16px;
+
+  border: 1px solid #b8c4d6;
+  border-radius: 8px;
+
+  box-sizing: border-box;
+}
+
+#manualSearchSubmitButton,
+#closeManualSearchButton {
+  flex: 0 0 auto;
+
+  height: 48px;
+  padding: 0 22px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#manualSearchSubmitButton {
+  border: none;
+  background: #2f6fda;
+  color: white;
+}
+
+#closeManualSearchButton {
+  border: 1px solid #b8c4d6;
+  background: white;
+  color: #10264b;
+}
